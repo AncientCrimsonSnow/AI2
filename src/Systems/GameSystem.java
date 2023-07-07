@@ -65,22 +65,35 @@ public class GameSystem {
         return game;
     }
 
-    public static void UpdateGame(Game game, Update update){
+    public static void Update(Game game, Update update){
         var expectedUpdate = game.playerBotOrder.get(game.updateIndex);
         var receivedUpdate = new int2(update.player, update.bot);
 
         while(!expectedUpdate.equals(receivedUpdate)){
+            game.player[expectedUpdate.x].bots[expectedUpdate.y].alive = false;
             game.playerBotOrder.remove(game.updateIndex);
             game.updateIndex %= game.playerBotOrder.size();
-            game.player[expectedUpdate.x].bots[expectedUpdate.y].alive = false;
+
+            var botDeathCell = game.player[expectedUpdate.x].bots[expectedUpdate.y].pos;
+            var botDeathArea = game.board.cellAreaMap.get(botDeathCell);
+            BoardSystem.RemapCellToArea(game.board, botDeathCell, botDeathArea, game.board.playerWalls[update.player]);
+            BoardSystem.TrySplitArea(game.board, botDeathArea);
+
             expectedUpdate = game.playerBotOrder.get(game.updateIndex);
         }
-        update.x *= Board.SCALE;
-        update.y *= Board.SCALE;
 
+        update.x = Math.round(update.x * Board.SCALE);
+        update.y = Math.round(update.y * Board.SCALE);
+
+        if(update.x == Data.Board.BOARD_SIDE_LENGTH)
+            update.x--;
+        if(update.y == Data.Board.BOARD_SIDE_LENGTH)
+            update.y--;
+
+        var oldBotPos = game.player[update.player].bots[update.bot].pos;
         if(PlayerSystem.Update(game.player[update.player], update))
-            BoardSystem.Update(game.board, update);
+            BoardSystem.Update(game.board, update, oldBotPos);
 
-        game.updateIndex = ( game.updateIndex + 1) % game.playerBotOrder.size();
+        game.updateIndex = (game.updateIndex + 1) % game.playerBotOrder.size();
     }
 }

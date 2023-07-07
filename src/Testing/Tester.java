@@ -16,15 +16,20 @@ public class Tester {
     public static void main(String[] args) {
         var game = GameSystem.InitGame(new MyClient());
         TestInit(game);
+        UpdateTest(game);
     }
 
     private static void TestInit(Data.Game game){
         for(var p = 0; p != Data.Player.PLAYER_COUNT; p++){
             for(var b = 0; b != Data.Bot.BOT_COUNT; b++){
-                EqualTest(game.player[p].bots[b].pos, TestData.TEST_BOT_POS[p][b].Multiply(Data.Board.SCALE), String.format("Player[%d], Bot[%d] Position", p, b));
-                var oldAreaCell = TestData.TEST_BOT_POS[p][b].Multiply(Board.SCALE);
-                oldAreaCell.x++;
-                EqualTest(game.board.botCrrAreas[p][b], game.board.cellAreaMap.get(oldAreaCell), String.format("Player[%d], Bot[%d] Area", p, b));
+                var testPos = TestData.TEST_BOT_POS[p][b].Multiply(Data.Board.SCALE);
+
+                if(testPos.x == Data.Board.BOARD_SIDE_LENGTH)
+                    testPos.x--;
+                if(testPos.y == Data.Board.BOARD_SIDE_LENGTH)
+                    testPos.y--;
+
+                EqualTest(game.player[p].bots[b].pos, testPos, String.format("Player[%d], Bot[%d] Position", p, b));
             }
         }
         EqualTest(BoardSystem.GetAreaCount(game.board), 10, "Init Area Count");
@@ -34,6 +39,429 @@ public class Tester {
             areaCellCount += area.cells.size();
 
         EqualTest(areaCellCount, game.board.cellAreaMap.size() - game.board.staticWalls.cells.size(), "Cell Count Init Check");
+    }
+    
+    private static void UpdateTest(Data.Game game){
+        var trueAreaSideLength = Data.Board.DEFAULT_BOARD_SIDE_LENGTH / 3f;
+        var areaSideLength = Data.Board.BOARD_SIDE_LENGTH / 3f;
+
+        var botsAlive = new boolean[]{true, true, true, true, true, true, true, true, true};
+        var didCheckBotDead = new boolean[]{false, false, false, false, false, false, false, false, false};
+        
+        for(var frame = 0; CheckIfAnyTrue(botsAlive); frame++){
+            var updateP0B0 = new Update();
+            updateP0B0.player = 0;
+            updateP0B0.bot = 0;
+            updateP0B0.x = frame;
+            updateP0B0.y = Math.round(trueAreaSideLength * 0.5f);
+
+            var updateP0B1 = new Update();
+            updateP0B1.player = 0;
+            updateP0B1.bot = 1;
+            updateP0B1.x = Math.max(frame - 16, 0);
+            updateP0B1.y = Math.round(trueAreaSideLength * 1.5f);
+
+            var updateP0B2 = new Update();
+            updateP0B2.player = 0;
+            updateP0B2.bot = 2;
+            updateP0B2.x = Math.max(frame - 16, 0);
+            updateP0B2.y = Math.round(trueAreaSideLength * 2.5f);
+            
+            var updateP1B0 = new Update();
+            updateP1B0.player = 1;
+            updateP1B0.bot = 0;
+            updateP1B0.x = Math.round(trueAreaSideLength/3f);
+            updateP1B0.y = Math.max(frame - 16, 0);
+
+            var updateP1B1 = new Update();
+            updateP1B1.player = 1;
+            updateP1B1.bot = 1;
+            updateP1B1.x = Math.round(trueAreaSideLength + Math.round(trueAreaSideLength * 2f / 3f));
+            updateP1B1.y = frame;
+
+            var updateP1B2 = new Update();
+            updateP1B2.player = 1;
+            updateP1B2.bot = 2;
+            updateP1B2.x = Math.round(2 * trueAreaSideLength + Math.round(trueAreaSideLength / 3f));
+            updateP1B2.y = Math.max(frame - 16, 0);;
+
+            var updateP2B0 = new Update();
+            updateP2B0.player = 2;
+            updateP2B0.bot = 0;
+            updateP2B0.x = Math.round(trueAreaSideLength * 2f / 3f);
+            updateP2B0.y = Board.DEFAULT_BOARD_SIDE_LENGTH - frame - 1;
+
+            var updateP2B1 = new Update();
+            updateP2B1.player = 2;
+            updateP2B1.bot = 1;
+            updateP2B1.x = Math.round(trueAreaSideLength + Math.round(trueAreaSideLength / 3f));
+            updateP2B1.y = Board.DEFAULT_BOARD_SIDE_LENGTH - frame - 1;
+
+            var updateP2B2 = new Update();
+            updateP2B2.player = 2;
+            updateP2B2.bot = 2;
+            updateP2B2.x = Board.DEFAULT_BOARD_SIDE_LENGTH - Math.round(trueAreaSideLength / 3f);
+            updateP2B2.y = Board.DEFAULT_BOARD_SIDE_LENGTH - frame - 1;
+
+            if(botsAlive[6] && (Math.round(updateP2B0.y * Board.SCALE) <= Math.round(areaSideLength * (2f+4f/5f)))){
+                botsAlive[6] = false;
+            }
+            if(botsAlive[7] && (Math.round(updateP2B1.y * Board.SCALE) <= Math.round(areaSideLength * (2f+4f/5f)))){
+                botsAlive[7] = false;
+            }
+            if(botsAlive[3] && (Math.round(updateP1B0.y * Board.SCALE) >= Math.round(areaSideLength * 0.5f))){
+                botsAlive[3] = false;
+            }
+            if(botsAlive[0] && (Math.round(updateP0B0.x * Board.SCALE) >= Math.round(areaSideLength + Math.round(areaSideLength * 2f / 3f)))){
+                botsAlive[0] = false;
+            }
+            if(botsAlive[1] && (Math.round(updateP0B1.x * Board.SCALE) >= Math.round(areaSideLength + Math.round(areaSideLength * 2f / 3f)))){
+                botsAlive[1] = false;
+            }
+            if(botsAlive[4] && (Math.round(updateP1B1.y * Board.SCALE) >= Math.round(areaSideLength * 2.5f))){
+                botsAlive[4] = false;
+            }
+            if(botsAlive[5] && (Math.round(updateP1B2.y * Board.SCALE) >= Math.round(areaSideLength * 2.5f))){
+                botsAlive[5] = false;
+            }
+
+            if(botsAlive[2] && (Math.round(updateP0B2.x * Board.SCALE) >= Math.round(areaSideLength * (2f + 2f/3f)) + 1)){
+                botsAlive[2] = false;
+            }
+            if(botsAlive[8] && (Math.round(updateP2B2.y * Board.SCALE) <= 0)){
+                botsAlive[8] = false;
+                break;
+            }
+
+            if(botsAlive[0]){
+                var startTime = System.nanoTime();
+                GameSystem.Update(game, updateP0B0);
+                long endTime = System.nanoTime();
+                long executionTime = endTime - startTime;
+                SmallerEqualTest(executionTime/1000000000f, 0.003f, "UpdateDurationTest");
+            }
+            if(botsAlive[1]){
+                var startTime = System.nanoTime();
+                GameSystem.Update(game, updateP0B1);
+                long endTime = System.nanoTime();
+                long executionTime = endTime - startTime;
+                SmallerEqualTest(executionTime/1000000000f, 0.003f, "UpdateDurationTest");
+            }
+            if(botsAlive[2]){
+                var startTime = System.nanoTime();
+                GameSystem.Update(game, updateP0B2);
+                long endTime = System.nanoTime();
+                long executionTime = endTime - startTime;
+                SmallerEqualTest(executionTime/1000000000f, 0.003f, "UpdateDurationTest");
+            }
+            if(botsAlive[3]){
+                var startTime = System.nanoTime();
+                GameSystem.Update(game, updateP1B0);
+                long endTime = System.nanoTime();
+                long executionTime = endTime - startTime;
+                SmallerEqualTest(executionTime/1000000000f, 0.003f, "UpdateDurationTest");
+            }
+            if(botsAlive[4]){
+                var startTime = System.nanoTime();
+                GameSystem.Update(game, updateP1B1);
+                long endTime = System.nanoTime();
+                long executionTime = endTime - startTime;
+                SmallerEqualTest(executionTime/1000000000f, 0.003f, "UpdateDurationTest");
+            }
+
+            if(botsAlive[5]){
+                var startTime = System.nanoTime();
+                GameSystem.Update(game, updateP1B2);
+                long endTime = System.nanoTime();
+                long executionTime = endTime - startTime;
+                SmallerEqualTest(executionTime/1000000000f, 0.003f, "UpdateDurationTest");
+            }
+            if(botsAlive[6]){
+                var startTime = System.nanoTime();
+                GameSystem.Update(game, updateP2B0);
+                long endTime = System.nanoTime();
+                long executionTime = endTime - startTime;
+                SmallerEqualTest(executionTime/1000000000f, 0.003f, "UpdateDurationTest");
+            }
+            if(botsAlive[7]){
+                var startTime = System.nanoTime();
+                GameSystem.Update(game, updateP2B1);
+                long endTime = System.nanoTime();
+                long executionTime = endTime - startTime;
+                SmallerEqualTest(executionTime/1000000000f, 0.003f, "UpdateDurationTest");
+            }
+            if(botsAlive[8]){
+                var startTime = System.nanoTime();
+                GameSystem.Update(game, updateP2B2);
+                long endTime = System.nanoTime();
+                long executionTime = endTime - startTime;
+                SmallerEqualTest(executionTime/1000000000f, 0.003f, "UpdateDurationTest");
+            }
+
+            var i = 0;
+            for(var p = 0; p != Data.Player.PLAYER_COUNT; p++){
+                for(var b = 0; b != Data.Bot.BOT_COUNT; b++, i++){
+                    EqualTest(game.player[p].bots[b].alive, botsAlive[i], String.format("Player[%d], Bot[%d] Alive Check", p, b));
+                    if(!botsAlive[i] && !didCheckBotDead[i]){
+                        didCheckBotDead[i] = true;
+                        CheckBotDead(new int2(p, b), areaSideLength, game);
+                    }
+                }
+            }
+        }
+    }
+
+    private static void CheckBotDead(int2 bot, float areaSideLength, Data.Game game){
+        if(bot.equals(new int2(2,0))){
+            EqualTest(BoardSystem.GetAreaCount(game.board), 12, "Bot[2,0] AreaCountCheck");
+
+            EqualTest(game.board.cellAreaMap.get(new int2(0, 0)).occupation, -1, "Bot[2,0] Dead, Area[0,0] Occupation");
+
+            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength), 0)).occupation, -1, "Bot[2,0] Dead, Area[1,0] Occupation");
+
+            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength * 2), 0)).occupation, -1, "Bot[2,0] Dead, Area[2,0] Occupation");
+
+            EqualTest(game.board.cellAreaMap.get(new int2(0, Math.round(areaSideLength))).occupation, -1, "Bot[2,0] Dead, Area[0,1] Occupation");
+
+            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength), Math.round(areaSideLength))).occupation, -1, "Bot[2,0] Dead, Area[1,1] Occupation");
+
+            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength * 2), Math.round(areaSideLength))).occupation, -1, "Bot[2,0] Dead, Area[2,1] Occupation");
+
+
+            EqualTest(game.board.cellAreaMap.get(new int2(0, Math.round(areaSideLength * 2))).occupation, -1, "Bot[2,0] Dead, Area1[0,2] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength * 2f / 3f) + 1, Math.round(areaSideLength * (2f+2f/3f)) + 1)).occupation, -1, "Bot[2,0] Dead, Area2[0,2] Occupation");
+
+            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength), Math.round(areaSideLength * 2))).occupation, -1, "Bot[2,0] Dead, Area1[1,2] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength + Math.round(areaSideLength / 3f)), Math.round(areaSideLength * (2f+2f/3f)) + 1)).occupation, -1, "Bot[2,0] Dead, Area2[1,2] Occupation");
+
+            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength * 2), Math.round(areaSideLength * 2))).occupation, -1, "Bot[2,0] Dead, Area[2,2] Occupation");
+        }
+        else if(bot.equals(new int2(2,1))){
+            EqualTest(BoardSystem.GetAreaCount(game.board), 12, "Bot[2,1] AreaCountCheck");
+
+            EqualTest(game.board.cellAreaMap.get(new int2(0, 0)).occupation, -1, "Bot[2,1] Dead, Area[0,0] Occupation");
+
+            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength), 0)).occupation, -1, "Bot[2,1] Dead, Area[1,0] Occupation");
+
+            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength * 2), 0)).occupation, -1, "Bot[2,1] Dead, Area[2,0] Occupation");
+
+            EqualTest(game.board.cellAreaMap.get(new int2(0, Math.round(areaSideLength))).occupation, -1, "Bot[2,1] Dead, Area[0,1] Occupation");
+
+            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength), Math.round(areaSideLength))).occupation, -1, "Bot[2,1] Dead, Area[1,1] Occupation");
+
+            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength * 2), Math.round(areaSideLength))).occupation, -1, "Bot[2,1] Dead, Area[2,1] Occupation");
+
+            EqualTest(game.board.cellAreaMap.get(new int2(0, Math.round(areaSideLength * 2))).occupation, -1, "Bot[2,1] Dead, Area1[0,2] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength * 2f / 3f) + 1, Math.round(areaSideLength * (2f+2f/3f)) + 1)).occupation, -1, "Bot[2,1] Dead, Area2[0,2] Occupation");
+
+            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength), Math.round(areaSideLength * 2))).occupation, -1, "Bot[2,1] Dead, Area1[1,2] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength + Math.round(areaSideLength / 3f)), Math.round(areaSideLength * (2f+2f/3f)) + 1)).occupation, -1, "Bot[2,1] Dead, Area2[1,2] Occupation");
+
+            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength * 2), Math.round(areaSideLength * 2))).occupation, -1, "Bot[2,1] Dead, Area[2,2] Occupation");
+        }
+        else if(bot.equals(new int2(1,0))){
+            EqualTest(BoardSystem.GetAreaCount(game.board), 13, "Bot[1,0] AreaCountCheck");
+
+            EqualTest(game.board.cellAreaMap.get(new int2(0, 0)).occupation, -1, "Bot[1,0] Dead, Area1[0,0] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new int2(0, Math.round(areaSideLength * 0.5f + 1))).occupation, -1, "Bot[1,0] Dead, Area2[0,0] Occupation");
+
+            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength), 0)).occupation, -1, "Bot[1,0] Dead, Area[0,1] Occupation");
+
+            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength * 2), 0)).occupation, -1, "Bot[1,0] Dead, Area[0,2] Occupation");
+
+            EqualTest(game.board.cellAreaMap.get(new int2(0, Math.round(areaSideLength))).occupation, -1, "Bot[1,0] Dead, Area[1,0] Occupation");
+
+            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength), Math.round(areaSideLength))).occupation, -1, "Bot[1,0] Dead, Area[1,1] Occupation");
+
+            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength * 2), Math.round(areaSideLength))).occupation, -1, "Bot[1,0] Dead, Area[2,1] Occupation");
+
+            EqualTest(game.board.cellAreaMap.get(new int2(0, Math.round(areaSideLength * 2))).occupation, -1, "Bot[1,0] Dead, Area1[0,2] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength * 2f / 3f) + 1, Math.round(areaSideLength * (2f+2f/3f)) + 1)).occupation, -1, "Bot[1,0] Dead, Area2[0,2] Occupation");
+
+            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength), Math.round(areaSideLength * 2))).occupation, -1, "Bot[1,0] Dead, Area1[1,2] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength + Math.round(areaSideLength / 3f)), Math.round(areaSideLength * (2f+2f/3f)) + 1)).occupation, -1, "Bot[1,0] Dead, Area2[1,2] Occupation");
+
+            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength * 2), Math.round(areaSideLength * 2))).occupation, -1, "Bot[1,0] Dead, Area[2,2] Occupation");
+        }
+        else if(bot.equals(new int2(0,0))){
+            EqualTest(BoardSystem.GetAreaCount(game.board), 20, "Bot[0,0] AreaCountCheck");
+
+            EqualTest(game.board.cellAreaMap.get(new int2(0, 0)).occupation, -1, "Bot[0,0] Dead, Area1[0,0] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new int2(0, Math.round(areaSideLength * 0.5f + 1))).occupation, -1, "Bot[0,0] Dead, Area2[0,0] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength/3f) + 1, 0)).occupation, -1, "Bot[0,0] Dead, Area3[0,0] Occupation");
+
+            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength), 0)).occupation, 0, "Bot[0,0] Dead, Area1[1,0] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength), Math.round(areaSideLength * 0.5f) + 1)).occupation, 0, "Bot[0,0] Dead, Area2[1,0] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength * (1f + 2f/3f)) + 3, 0)).occupation, -1, "Bot[0,0] Dead, Area3[1,0] Occupation");
+
+            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength * 2), 0)).occupation, -1, "Bot[0,0] Dead, Area1[2,0] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength * (2f + 1f/3f)) + 1,  0)).occupation, -1, "Bot[0,0] Dead, Area2[2,0] Occupation");
+
+            EqualTest(game.board.cellAreaMap.get(new int2(0, Math.round(areaSideLength))).occupation, -1, "Bot[0,0] Dead, Area[0,1] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new int2(0, Math.round(areaSideLength * 1.5f) + 1)).occupation, -1, "Bot[0,0] Dead, Area[0,1] Occupation");
+
+            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength), Math.round(areaSideLength))).occupation, 0, "Bot[0,0] Dead, Area[1,1] Occupation");
+
+            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength * 2), Math.round(areaSideLength))).occupation, 1, "Bot[0,0] Dead, Area[2,1] Occupation");
+
+            EqualTest(game.board.cellAreaMap.get(new int2(0, Math.round(areaSideLength * 2))).occupation, -1, "Bot[0,0] Dead, Area1[0,2] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength * 2f / 3f) + 1, Math.round(areaSideLength * (2f+2f/3f)) + 1)).occupation, -1, "Bot[0,0] Dead, Area2[0,2] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new int2(0, Math.round(areaSideLength * 2.5f) + 1)).occupation, -1, "Bot[0,0] Dead, Area3[0,2] Occupation");
+
+            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength), Math.round(areaSideLength * 2))).occupation, 0, "Bot[0,0] Dead, Area1[1,2] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength), Math.round(areaSideLength * 3)- 1)).occupation, -1, "Bot[0,0] Dead, Area2[1,2] Occupation");
+
+            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength * 2), Math.round(areaSideLength * 2))).occupation, -1, "Bot[0,0] Dead, Area1[2,2] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength * 3)- 1, Math.round(areaSideLength * 3)- 1)).occupation, -1, "Bot[0,0] Dead, Area2[2,2] Occupation");
+        }
+        else if(bot.equals(new int2(0,1))){
+            EqualTest(BoardSystem.GetAreaCount(game.board), 21, "Bot[0,1] AreaCountCheck");
+
+            EqualTest(game.board.cellAreaMap.get(new int2(0, 0)).occupation, -1, "Bot[0,1] Dead, Area1[0,0] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new int2(0, Math.round(areaSideLength * 0.5f + 1))).occupation, -1, "Bot[0,1] Dead, Area2[0,0] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength/3f) + 1, 0)).occupation, -1, "Bot[0,1] Dead, Area3[0,0] Occupation");
+
+            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength), 0)).occupation, 0, "Bot[0,1] Dead, Area1[1,0] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength), Math.round(areaSideLength * 0.5f) + 1)).occupation, 0, "Bot[0,1] Dead, Area2[1,0] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength * (1f + 2f/3f)) + 3, 0)).occupation, -1, "Bot[0,1] Dead, Area3[1,0] Occupation");
+
+            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength * 2), 0)).occupation, -1, "Bot[0,1] Dead, Area1[2,0] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength * (2f + 1f/3f)) + 1,  0)).occupation, -1, "Bot[0,1] Dead, Area2[2,0] Occupation");
+
+            EqualTest(game.board.cellAreaMap.get(new int2(0, Math.round(areaSideLength))).occupation, -1, "Bot[0,1] Dead, Area[0,1] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new int2(0, Math.round(areaSideLength * 1.5f) + 1)).occupation, -1, "Bot[0,1] Dead, Area[0,1] Occupation");
+
+            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength), Math.round(areaSideLength))).occupation, 0, "Bot[0,1] Dead, Area1[1,1] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength), Math.round(areaSideLength * 1.5f) + 1)).occupation, 0, "Bot[0,1] Dead, Area2[1,1] Occupation");
+
+            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength * 2), Math.round(areaSideLength))).occupation, 1, "Bot[0,1] Dead, Area[2,1] Occupation");
+
+            EqualTest(game.board.cellAreaMap.get(new int2(0, Math.round(areaSideLength * 2))).occupation, -1, "Bot[0,1] Dead, Area1[0,2] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength * 2f / 3f) + 1, Math.round(areaSideLength * (2f+2f/3f)) + 1)).occupation, -1, "Bot[0,1] Dead, Area2[0,2] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new int2(0, Math.round(areaSideLength * 2.5f) + 1)).occupation, -1, "Bot[0,1] Dead, Area3[0,2] Occupation");
+
+            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength), Math.round(areaSideLength * 2))).occupation, 0, "Bot[0,1] Dead, Area1[1,2] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength), Math.round(areaSideLength * 3)- 1)).occupation, -1, "Bot[0,1] Dead, Area2[1,2] Occupation");
+
+            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength * 2), Math.round(areaSideLength * 2))).occupation, -1, "Bot[0,1] Dead, Area1[2,2] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength * 3)- 1, Math.round(areaSideLength * 3)- 1)).occupation, -1, "Bot[0,1] Dead, Area2[2,2] Occupation");
+        }
+        else if(bot.equals(new int2(1,1))){
+            EqualTest(BoardSystem.GetAreaCount(game.board), 26, "Bot[1,1] AreaCountCheck");
+
+            EqualTest(game.board.cellAreaMap.get(new int2(0, 0)).occupation, -1, "Bot[1,1] Dead, Area1[0,0] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new int2(0, Math.round(areaSideLength * 0.5f + 1))).occupation, -1, "Bot[1,1] Dead, Area2[0,0] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength/3f) + 1, 0)).occupation, -1, "Bot[1,1] Dead, Area3[0,0] Occupation");
+
+            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength), 0)).occupation, 0, "Bot[1,1] Dead, Area1[1,0] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength), Math.round(areaSideLength * 0.5f) + 1)).occupation, 0, "Bot[1,1] Dead, Area2[1,0] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength * (1f + 2f/3f)) + 3, 0)).occupation, -1, "Bot[1,1] Dead, Area3[1,0] Occupation");
+
+            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength * 2), 0)).occupation, -1, "Bot[1,1] Dead, Area1[2,0] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength * (2f + 1f/3f)) + 1,  0)).occupation, 2, "Bot[1,1] Dead, Area2[2,0] Occupation");
+
+            EqualTest(game.board.cellAreaMap.get(new int2(0, Math.round(areaSideLength))).occupation, -1, "Bot[1,1] Dead, Area[0,1] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new int2(0, Math.round(areaSideLength * 1.5f) + 1)).occupation, -1, "Bot[1,1] Dead, Area[0,1] Occupation");
+
+            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength), Math.round(areaSideLength))).occupation, 0, "Bot[1,1] Dead, Area1[1,1] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength), Math.round(areaSideLength * 1.5f) + 1)).occupation, 0, "Bot[1,1] Dead, Area2[1,1] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength * (1f + 2f/3f)) + 1, Math.round(areaSideLength))).occupation, 0, "Bot[1,1] Dead, Area3[1,1] Occupation");
+
+            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength * 2), Math.round(areaSideLength))).occupation, 1, "Bot[1,1] Dead, Area1[2,1] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength * (2f + 1f/3f) + 1), Math.round(areaSideLength))).occupation, 1, "Bot[1,1] Dead, Area2[2,1] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength * 3)- 1, Math.round(areaSideLength))).occupation, 1, "Bot[1,1] Dead, Area3[2,1] Occupation");
+
+            EqualTest(game.board.cellAreaMap.get(new int2(0, Math.round(areaSideLength * 2))).occupation, -1, "Bot[1,1] Dead, Area1[0,2] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength * 2f / 3f) + 1, Math.round(areaSideLength * (2f+2f/3f)) + 1)).occupation, -1, "Bot[1,1] Dead, Area2[0,2] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new int2(0, Math.round(areaSideLength * 2.5f) + 1)).occupation, -1, "Bot[1,1] Dead, Area3[0,2] Occupation");
+
+            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength), Math.round(areaSideLength * 2))).occupation, 1, "Bot[1,1] Dead, Area1[1,2] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength), Math.round(areaSideLength * 3)- 1)).occupation, -1, "Bot[1,1] Dead, Area2[1,2] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength * 2f) - 1, Math.round(areaSideLength * 3f) - 1)).occupation, 1, "Bot[1,1] Dead, Area3[1,2] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength * (1f + 2f/3f) + 1), Math.round(areaSideLength * 2))).occupation, 1, "Bot[1,1] Dead, Area4[1,2] Occupation");
+
+            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength * 2), Math.round(areaSideLength * 2))).occupation, 1, "Bot[1,1] Dead, Area1[2,2] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength * 3)- 1, Math.round(areaSideLength * 3)- 1)).occupation, -1, "Bot[1,1] Dead, Area2[2,2] Occupation");
+        }
+
+        else if(bot.equals(new int2(1,2))){
+            EqualTest(BoardSystem.GetAreaCount(game.board), 27, "Bot[1,2] AreaCountCheck");
+
+            EqualTest(game.board.cellAreaMap.get(new int2(0, 0)).occupation, -1, "Bot[1,2] Dead, Area1[0,0] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new int2(0, Math.round(areaSideLength * 0.5f + 1))).occupation, -1, "Bot[1,2] Dead, Area2[0,0] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength/3f) + 1, 0)).occupation, -1, "Bot[1,2] Dead, Area3[0,0] Occupation");
+
+            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength), 0)).occupation, 0, "Bot[1,2] Dead, Area1[1,0] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength), Math.round(areaSideLength * 0.5f) + 1)).occupation, 0, "Bot[1,2] Dead, Area2[1,0] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength * (1f + 2f/3f)) + 3, 0)).occupation, -1, "Bot[1,2] Dead, Area3[1,0] Occupation");
+
+            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength * 2), 0)).occupation, -1, "Bot[1,2] Dead, Area1[2,0] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength * (2f + 1f/3f)) + 1,  0)).occupation, 2, "Bot[1,2] Dead, Area2[2,0] Occupation");
+
+            EqualTest(game.board.cellAreaMap.get(new int2(0, Math.round(areaSideLength))).occupation, -1, "Bot[1,2] Dead, Area[0,1] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new int2(0, Math.round(areaSideLength * 1.5f) + 1)).occupation, -1, "Bot[1,2] Dead, Area[0,1] Occupation");
+
+            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength), Math.round(areaSideLength))).occupation, 0, "Bot[1,2] Dead, Area1[1,1] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength), Math.round(areaSideLength * 1.5f) + 1)).occupation, 0, "Bot[1,2] Dead, Area2[1,1] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength * (1f + 2f/3f)) + 1, Math.round(areaSideLength))).occupation, 0, "Bot[1,2] Dead, Area3[1,1] Occupation");
+
+            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength * 2), Math.round(areaSideLength))).occupation, 1, "Bot[1,2] Dead, Area1[2,1] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength * (2f + 1f/3f) + 1), Math.round(areaSideLength))).occupation, 1, "Bot[1,2] Dead, Area2[2,1] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength * 3)- 1, Math.round(areaSideLength))).occupation, 1, "Bot[1,2] Dead, Area3[2,1] Occupation");
+
+            EqualTest(game.board.cellAreaMap.get(new int2(0, Math.round(areaSideLength * 2))).occupation, -1, "Bot[1,2] Dead, Area1[0,2] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength * 2f / 3f) + 1, Math.round(areaSideLength * (2f+2f/3f)) + 1)).occupation, -1, "Bot[1,2] Dead, Area2[0,2] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new int2(0, Math.round(areaSideLength * 2.5f) + 1)).occupation, -1, "Bot[1,2] Dead, Area3[0,2] Occupation");
+
+            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength), Math.round(areaSideLength * 2))).occupation, 1, "Bot[1,2] Dead, Area1[1,2] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength), Math.round(areaSideLength * 3)- 1)).occupation, -1, "Bot[1,2] Dead, Area2[1,2] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength * 2f) - 1, Math.round(areaSideLength * 3f) - 1)).occupation, 1, "Bot[1,2] Dead, Area3[1,2] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength * (1f + 2f/3f) + 1), Math.round(areaSideLength * 2))).occupation, 1, "Bot[1,2] Dead, Area4[1,2] Occupation");
+
+            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength * 2), Math.round(areaSideLength * 2))).occupation, 1, "Bot[1,2] Dead, Area1[2,2] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength * 3)- 1, Math.round(areaSideLength * 3)- 1)).occupation, -1, "Bot[1,2] Dead, Area2[2,2] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength * 2.5f), Math.round(areaSideLength * 2))).occupation, 1, "Bot[1,2] Dead, Area3[2,2] Occupation");
+        }
+        else if(bot.equals(new int2(0,2))){
+            EqualTest(BoardSystem.GetAreaCount(game.board), 28, "Bot[0,2] AreaCountCheck");
+
+            EqualTest(game.board.cellAreaMap.get(new int2(0, 0)).occupation, -1, "Bot[0,2] Dead, Area1[0,0] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new int2(0, Math.round(areaSideLength * 0.5f + 1))).occupation, -1, "Bot[0,2] Dead, Area2[0,0] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength/3f) + 1, 0)).occupation, -1, "Bot[0,2] Dead, Area3[0,0] Occupation");
+
+            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength), 0)).occupation, 0, "Bot[0,2] Dead, Area1[1,0] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength), Math.round(areaSideLength * 0.5f) + 1)).occupation, 0, "Bot[0,2] Dead, Area2[1,0] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength * (1f + 2f/3f)) + 3, 0)).occupation, -1, "Bot[0,2] Dead, Area3[1,0] Occupation");
+
+            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength * 2), 0)).occupation, -1, "Bot[0,2] Dead, Area1[2,0] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength * (2f + 1f/3f)) + 1,  0)).occupation, 2, "Bot[0,2] Dead, Area2[2,0] Occupation");
+
+            EqualTest(game.board.cellAreaMap.get(new int2(0, Math.round(areaSideLength))).occupation, -1, "Bot[0,2] Dead, Area[0,1] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new int2(0, Math.round(areaSideLength * 1.5f) + 1)).occupation, -1, "Bot[0,2] Dead, Area[0,1] Occupation");
+
+            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength), Math.round(areaSideLength))).occupation, 0, "Bot[0,2] Dead, Area1[1,1] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength), Math.round(areaSideLength * 1.5f) + 1)).occupation, 0, "Bot[0,2] Dead, Area2[1,1] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength * (1f + 2f/3f)) + 1, Math.round(areaSideLength))).occupation, 0, "Bot[0,2] Dead, Area3[1,1] Occupation");
+
+            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength * 2), Math.round(areaSideLength))).occupation, 1, "Bot[0,2] Dead, Area1[2,1] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength * (2f + 1f/3f) + 1), Math.round(areaSideLength))).occupation, 1, "Bot[0,2] Dead, Area2[2,1] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength * 3)- 1, Math.round(areaSideLength))).occupation, 1, "Bot[0,2] Dead, Area3[2,1] Occupation");
+
+            EqualTest(game.board.cellAreaMap.get(new int2(0, Math.round(areaSideLength * 2))).occupation, -1, "Bot[0,2] Dead, Area1[0,2] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength * 2f / 3f) + 1, Math.round(areaSideLength * (2f+2f/3f)) + 1)).occupation, -1, "Bot[0,2] Dead, Area2[0,2] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new int2(0, Math.round(areaSideLength * 2.5f) + 1)).occupation, -1, "Bot[0,2] Dead, Area3[0,2] Occupation");
+
+            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength), Math.round(areaSideLength * 2))).occupation, 1, "Bot[0,2] Dead, Area1[1,2] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength), Math.round(areaSideLength * 3)- 1)).occupation, -1, "Bot[0,2] Dead, Area2[1,2] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength * 2f) - 1, Math.round(areaSideLength * 3f) - 1)).occupation, 1, "Bot[0,2] Dead, Area3[1,2] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength * (1f + 2f/3f) + 1), Math.round(areaSideLength * 2))).occupation, 1, "Bot[0,2] Dead, Area4[1,2] Occupation");
+
+            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength * 2), Math.round(areaSideLength * 2))).occupation, 1, "Bot[0,2] Dead, Area1[2,2] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength * 3)- 1, Math.round(areaSideLength * 3)- 1)).occupation, -1, "Bot[0,2] Dead, Area2[2,2] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength * 2.5f), Math.round(areaSideLength * 2))).occupation, 1, "Bot[0,2] Dead, Area3[2,2] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength * 2.5f), Math.round(areaSideLength * 3) - 1)).occupation, 1, "Bot[0,2] Dead, Area3[2,2] Occupation");
+        }
+        else if(bot.equals(new int2(2,2))){}
     }
 
     private static void SetAreas(int horizontalAreaCount, int verticalAreaCount){
@@ -123,6 +551,7 @@ public class Tester {
         var game = new Game();
         SetAreas(3,3);
 
+        
         var areaSideLength = Board.BOARD_SIDE_LENGTH / 3f;
         var trueAreaSideLength = Board.DEFAULT_BOARD_SIDE_LENGTH / 3f;
         //INIT

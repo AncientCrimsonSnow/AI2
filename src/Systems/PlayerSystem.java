@@ -32,6 +32,12 @@ public class PlayerSystem {
         var botStartingPositions = new HashSet<int2>(Bot.BOT_COUNT);
         for(var b = 0; b != Bot.BOT_COUNT; b++){
             var pos = new int2(Math.round(client.getStartX(playerNumber, b) * Board.SCALE), Math.round(client.getStartY(playerNumber, b) * Board.SCALE));
+
+            if(pos.x == Board.BOARD_SIDE_LENGTH)
+                pos.x--;
+            if(pos.y == Board.BOARD_SIDE_LENGTH)
+                pos.y--;
+
             botStartingPositions.add(pos);
             player.bots[b] = BotSystem.InitBot(pos);
         }
@@ -41,7 +47,7 @@ public class PlayerSystem {
 
     public static boolean Update(Player player, Update update){
         var pos = new int2(update.x, update.y);
-        if(pos == player.bots[update.bot].pos)
+        if(pos.equals(player.bots[update.bot].pos))
             return false;
 
         BotSystem.Update(player.bots[update.bot], pos);

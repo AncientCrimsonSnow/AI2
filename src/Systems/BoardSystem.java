@@ -1,6 +1,8 @@
 package Systems;
 
-import Data.*;
+import Data.Area;
+import Data.Board;
+import Data.Game;
 import Testing.MyClient;
 import Utils.int2;
 import lenz.htw.duktus.net.NetworkClient;
@@ -76,16 +78,6 @@ public class BoardSystem {
             }
         }
 
-        //Bot Crr Aras
-        board.botCrrAreas = new Area[Bot.BOT_COUNT][Player.PLAYER_COUNT];
-
-        for(var p = 0; p != Player.PLAYER_COUNT; p++){
-            var playerNumber = (client.getMyPlayerNumber() + p) % 3;
-            for(var b = 0; b != Bot.BOT_COUNT; b++){
-                board.botCrrAreas[playerNumber][b] = board.cellAreaMap.get(new int2( Math.round(client.getStartX(playerNumber, b) * Board.SCALE), Math.round(client.getStartY(playerNumber, b) * Board.SCALE)));
-            }
-        }
-
         //Static Wall Adding
         board.staticWalls = ScaleArea(staticWall, Board.SCALE);
         for(var cell : board.staticWalls.cells){
@@ -136,7 +128,12 @@ public class BoardSystem {
             }
         }
 
-        var playerWalls = new Area[Player.PLAYER_COUNT];
+        var playerWalls = new Area[]{
+                AreaSystem.InitArea(0),
+                AreaSystem.InitArea(1),
+                AreaSystem.InitArea(2)
+        };
+
 
         board.cellAreaMap = new HashMap<>();
         board.areas = new HashSet<>();
@@ -163,16 +160,6 @@ public class BoardSystem {
             }
         }
 
-        //Bot Crr Aras
-        board.botCrrAreas = new Area[Bot.BOT_COUNT][Player.PLAYER_COUNT];
-
-        for(var p = 0; p != Player.PLAYER_COUNT; p++){
-            var playerNumber = (client.getMyPlayerNumber() + p) % 3;
-            for(var b = 0; b != Bot.BOT_COUNT; b++){
-                board.botCrrAreas[playerNumber][b] = board.cellAreaMap.get(new int2( Math.round(client.getStartX(playerNumber, b) * Board.SCALE), Math.round(client.getStartY(playerNumber, b) * Board.SCALE)));
-            }
-        }
-
         //Static Wall Adding
         board.staticWalls = ScaleArea(staticWall, Board.SCALE);
         for(var cell : board.staticWalls.cells){
@@ -191,13 +178,21 @@ public class BoardSystem {
         return board;
     }
 
-    public static void Update(Board board, Update update){
+    public static void Update(Board board, Update update, int2 oldCell){
         //TODO A-Star check for missed updates
-        
+
         var cellToUpdate = new int2(update.x, update.y);
-        var oldArea = board.cellAreaMap.get(cellToUpdate);
-        RemapCellToArea(board, cellToUpdate, oldArea, board.playerWalls[update.player]);
+        var oldArea = board.cellAreaMap.get(oldCell);
+        var newArea = board.cellAreaMap.get(cellToUpdate);
+
+        RemapCellToArea(board, oldCell, oldArea, board.playerWalls[update.player]);
+
+        if(oldArea != newArea){
+            newArea.occupation = update.player;
+            TrySplitArea(board, oldArea);
+        }
     }
+
     private static Area ScaleArea(Area area, float scale){
         var scaledAreaCells = new HashSet<int2>();
 
@@ -215,9 +210,11 @@ public class BoardSystem {
         return AreaSystem.InitArea(area.occupation, scaledAreaCells);
     }
 
-    private static boolean TrySplitArea(Board board, Area area){
+    public static boolean TrySplitArea(Board board, Area area){
         HashSet<int2> openList = new HashSet<>();
         HashSet<int2> closedList = new HashSet<>();
+
+        var addedCells = new HashSet<int2>();
 
         var areaIterator = area.cells.iterator();
         openList.add(areaIterator.next());
@@ -234,21 +231,23 @@ public class BoardSystem {
                     new int2(crrCell.x, crrCell.y + 1),
             };
 
-
             //Add Cells if they are in the same area to the open list
             for (var i = 0; i < cellsToCheck.length; i++) {
                 var cellToCheck = cellsToCheck[i];
+
                 if (board.cellAreaMap.containsKey(cellToCheck)) {
                     var neighbourCellArea = board.cellAreaMap.get(cellToCheck);
-                    if (neighbourCellArea == area)
+                    if (neighbourCellArea == area){
+                        addedCells.add(cellToCheck);
                         if (!openList.contains(cellToCheck) && !closedList.contains(cellToCheck))
                             openList.add(cellToCheck);
+                    }
                 }
             }
         }
 
         //Split if
-        if (closedList.size() != area.cells.size()) {
+        if (addedCells.size() != area.cells.size()) {
             var area1 = AreaSystem.InitArea(area.occupation);
             var area2 = AreaSystem.InitArea(area.occupation);
 
@@ -266,16 +265,6 @@ public class BoardSystem {
                 else
                     RemapCellToArea(board, cell, area, area2);
             }
-
-            for(var p = 0; p != Player.PLAYER_COUNT; p++){
-                for(var b = 0; b != Bot.BOT_COUNT; b++){
-                    if(board.botCrrAreas[p][b] == area){
-                        var botPos = board.game.player[p].bots[b].pos;
-                        board.botCrrAreas[p][b] = (area1.cells.contains(botPos))? area1 : area2;
-                    }
-                }
-            }
-
             return true;
         }
         return false;

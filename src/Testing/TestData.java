@@ -12,7 +12,7 @@ public class TestData {
     public static final int2[][] TEST_BOT_POS = {
             {new int2(0, Math.round(AREA_SIDE_LENGTH * .5f)), new int2(0,Math.round(AREA_SIDE_LENGTH * 1.5f)), new int2(0,Math.round(AREA_SIDE_LENGTH * 2.5f))},
             {new int2(Math.round(AREA_SIDE_LENGTH/3f),0), new int2(Math.round(AREA_SIDE_LENGTH + Math.round(AREA_SIDE_LENGTH * 2f / 3f)),0),new int2(Math.round(2 * AREA_SIDE_LENGTH + Math.round(AREA_SIDE_LENGTH / 3f)),0)},
-            {new int2(Math.round(AREA_SIDE_LENGTH * 2f / 3f), Core.Board.BOARD_SIDE_LENGTH - 1), new int2(Math.round(AREA_SIDE_LENGTH + Math.round(AREA_SIDE_LENGTH / 3f)), Core.Board.BOARD_SIDE_LENGTH - 1), new int2(Core.Board.BOARD_SIDE_LENGTH - Math.round(AREA_SIDE_LENGTH / 3f), Core.Board.BOARD_SIDE_LENGTH - 1)}
+            {new int2(Math.round(AREA_SIDE_LENGTH * 2f / 3f), Core.Board.DEFAULT_BOARD_SIDE_LENGTH - 1), new int2(Math.round(AREA_SIDE_LENGTH + Math.round(AREA_SIDE_LENGTH / 3f)), Core.Board.DEFAULT_BOARD_SIDE_LENGTH - 1), new int2(Core.Board.DEFAULT_BOARD_SIDE_LENGTH - Math.round(AREA_SIDE_LENGTH / 3f), Core.Board.DEFAULT_BOARD_SIDE_LENGTH - 1)}
     };
 
     public static HashMap<int2, Integer> GetAreaIdMap(){
@@ -29,7 +29,7 @@ public class TestData {
         var staticWallCellS = new HashSet<int2>();
 
         for(var x = 0; x <= AREA_SIDE_LENGTH * 1.5f; x++)
-            staticWallCellS.add(new int2(x, Math.round(AREA_SIDE_LENGTH * (2f + 2f/3f))));
+            staticWallCellS.add(new int2(x, Math.round(AREA_SIDE_LENGTH * (2f + 4f/5f))));
 
         return staticWallCellS;
     }
