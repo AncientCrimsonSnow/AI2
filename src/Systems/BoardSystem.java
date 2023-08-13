@@ -3,8 +3,8 @@ package Systems;
 import Data.Area;
 import Data.Board;
 import Data.Game;
+import Data.Integer2;
 import Testing.MyClient;
-import Utils.int2;
 import lenz.htw.duktus.net.NetworkClient;
 import lenz.htw.duktus.net.Update;
 
@@ -26,7 +26,7 @@ public class BoardSystem {
             for(var x = 0; x != Board.DEFAULT_BOARD_SIDE_LENGTH; x++){
 
                 var areaId = client.getAreaId(x, y);
-                var cell = new int2(x,y);
+                var cell = new Integer2(x,y);
 
                 if(areaId == 0){
                     staticWall.cells.add(cell);
@@ -68,7 +68,7 @@ public class BoardSystem {
         //Check for doubles
         for(var y = 0; y != Board.BOARD_SIDE_LENGTH; y++){
             for(var x = 0; x != Board.BOARD_SIDE_LENGTH; x++){
-                var cell = new int2(x,y);
+                var cell = new Integer2(x,y);
                 var correctArea = board.cellAreaMap.get(cell);
                 for(var area : board.areas){
                     if(area != correctArea){
@@ -108,7 +108,7 @@ public class BoardSystem {
             for(var x = 0; x != Board.DEFAULT_BOARD_SIDE_LENGTH; x++){
 
                 var areaId = client.getAreaId(x, y);
-                var cell = new int2(x,y);
+                var cell = new Integer2(x,y);
 
                 if(areaId == 0){
                     staticWall.cells.add(cell);
@@ -150,7 +150,7 @@ public class BoardSystem {
         //Check for doubles
         for(var y = 0; y != Board.BOARD_SIDE_LENGTH; y++){
             for(var x = 0; x != Board.BOARD_SIDE_LENGTH; x++){
-                var cell = new int2(x,y);
+                var cell = new Integer2(x,y);
                 var correctArea = board.cellAreaMap.get(cell);
                 for(var area : board.areas){
                     if(area != correctArea){
@@ -178,10 +178,8 @@ public class BoardSystem {
         return board;
     }
 
-    public static void Update(Board board, Update update, int2 oldCell){
-        //TODO A-Star check for missed updates
-
-        var cellToUpdate = new int2(update.x, update.y);
+    public static void Update(Board board, Update update, Integer2 oldCell){
+        var cellToUpdate = new Integer2(update.x, update.y);
         var oldArea = board.cellAreaMap.get(oldCell);
         var newArea = board.cellAreaMap.get(cellToUpdate);
 
@@ -194,7 +192,7 @@ public class BoardSystem {
     }
 
     private static Area ScaleArea(Area area, float scale){
-        var scaledAreaCells = new HashSet<int2>();
+        var scaledAreaCells = new HashSet<Integer2>();
 
         for (var cell : area.cells) {
             var scaledX = Math.round(cell.x * scale);
@@ -203,7 +201,7 @@ public class BoardSystem {
             if(scaledX == Board.BOARD_SIDE_LENGTH || scaledY == Board.BOARD_SIDE_LENGTH)
                 continue;
 
-            var scaledCell = new int2(scaledX, scaledY);
+            var scaledCell = new Integer2(scaledX, scaledY);
             scaledAreaCells.add(scaledCell);
         }
 
@@ -211,12 +209,26 @@ public class BoardSystem {
     }
 
     public static boolean TrySplitArea(Board board, Area area){
-        HashSet<int2> openList = new HashSet<>();
-        HashSet<int2> closedList = new HashSet<>();
 
-        var addedCells = new HashSet<int2>();
+        if(area == board.staticWalls)
+            return false;
+        if(area == board.playerWalls[0])
+            return false;
+        if(area == board.playerWalls[1])
+            return false;
+        if(area == board.playerWalls[2])
+            return false;
+
+        HashSet<Integer2> openList = new HashSet<>();
+        HashSet<Integer2> closedList = new HashSet<>();
+
+        var addedCells = new HashSet<Integer2>();
 
         var areaIterator = area.cells.iterator();
+
+        if(area.cells.size() == 0)
+            return false;
+
         openList.add(areaIterator.next());
 
         while (!openList.isEmpty()) {
@@ -224,11 +236,11 @@ public class BoardSystem {
             openList.remove(crrCell);
             closedList.add(crrCell);
 
-            var cellsToCheck = new int2[]{
-                    new int2(crrCell.x - 1, crrCell.y),
-                    new int2(crrCell.x + 1, crrCell.y),
-                    new int2(crrCell.x, crrCell.y - 1),
-                    new int2(crrCell.x, crrCell.y + 1),
+            var cellsToCheck = new Integer2[]{
+                    new Integer2(crrCell.x - 1, crrCell.y),
+                    new Integer2(crrCell.x + 1, crrCell.y),
+                    new Integer2(crrCell.x, crrCell.y - 1),
+                    new Integer2(crrCell.x, crrCell.y + 1),
             };
 
             //Add Cells if they are in the same area to the open list
@@ -255,7 +267,7 @@ public class BoardSystem {
             board.areas.add(area1);
             board.areas.add(area2);
 
-            var allCells = new int2[area.cells.size()];
+            var allCells = new Integer2[area.cells.size()];
             area.cells.toArray(allCells);
 
             for(var i = 0; i != allCells.length; i++){
@@ -270,7 +282,7 @@ public class BoardSystem {
         return false;
     }
 
-    public static void RemapCellToArea(Board board, int2 cell, Area oldArea, Area newArea){
+    public static void RemapCellToArea(Board board, Integer2 cell, Area oldArea, Area newArea){
         oldArea.cells.remove(cell);
         newArea.cells.add(cell);
 

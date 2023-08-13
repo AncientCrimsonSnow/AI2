@@ -1,12 +1,10 @@
 package Data;
 
-import Utils.int2;
-
 import java.util.HashSet;
 
 public class Area {
     public int occupation;
-    public HashSet<int2> cells;
+    public HashSet<Integer2> cells;
 
     @Override
     public String toString(){

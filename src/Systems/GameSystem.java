@@ -1,10 +1,10 @@
 package Systems;
 
-import Core.Board;
+import Data.Board;
 import Data.Game;
+import Data.Integer2;
 import Data.Player;
 import Testing.MyClient;
-import Utils.int2;
 import lenz.htw.duktus.net.NetworkClient;
 import lenz.htw.duktus.net.Update;
 
@@ -24,15 +24,15 @@ public class GameSystem {
 
         game.updateIndex = 0;
         game.playerBotOrder = new ArrayList<>(){{
-            add(new int2(0,0));
-            add(new int2(0,1));
-            add(new int2(0,2));
-            add(new int2(1,0));
-            add(new int2(1,1));
-            add(new int2(1,2));
-            add(new int2(2,0));
-            add(new int2(2,1));
-            add(new int2(2,2));
+            add(new Integer2(0,0));
+            add(new Integer2(0,1));
+            add(new Integer2(0,2));
+            add(new Integer2(1,0));
+            add(new Integer2(1,1));
+            add(new Integer2(1,2));
+            add(new Integer2(2,0));
+            add(new Integer2(2,1));
+            add(new Integer2(2,2));
         }};
 
         return game;
@@ -51,15 +51,15 @@ public class GameSystem {
 
         game.updateIndex = 0;
         game.playerBotOrder = new ArrayList<>(){{
-            add(new int2(0,0));
-            add(new int2(0,1));
-            add(new int2(0,2));
-            add(new int2(1,0));
-            add(new int2(1,1));
-            add(new int2(1,2));
-            add(new int2(2,0));
-            add(new int2(2,1));
-            add(new int2(2,2));
+            add(new Integer2(0,0));
+            add(new Integer2(0,1));
+            add(new Integer2(0,2));
+            add(new Integer2(1,0));
+            add(new Integer2(1,1));
+            add(new Integer2(1,2));
+            add(new Integer2(2,0));
+            add(new Integer2(2,1));
+            add(new Integer2(2,2));
         }};
 
         return game;
@@ -67,7 +67,7 @@ public class GameSystem {
 
     public static void Update(Game game, Update update){
         var expectedUpdate = game.playerBotOrder.get(game.updateIndex);
-        var receivedUpdate = new int2(update.player, update.bot);
+        var receivedUpdate = new Integer2(update.player, update.bot);
 
         while(!expectedUpdate.equals(receivedUpdate)){
             game.player[expectedUpdate.x].bots[expectedUpdate.y].alive = false;

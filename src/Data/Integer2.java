@@ -1,10 +1,10 @@
-package Utils;
+package Data;
 
-public class int2 {
+public class Integer2 {
     public int x;
     public int y;
 
-    public int2(int x, int y) {
+    public Integer2(int x, int y) {
         this.x = x;
         this.y = y;
     }
@@ -13,7 +13,7 @@ public class int2 {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        int2 value = (int2) o;
+        Integer2 value = (Integer2) o;
         return x == value.x && y == value.y;
     }
 
@@ -29,7 +29,11 @@ public class int2 {
         return "(" + x + "/" + y + ")";
     }
 
-    public int2 Multiply(float other) {
-        return new int2(Math.round(x * other), Math.round(y * other));
+    public Integer2 Multiply(float other) {
+        return new Integer2(Math.round(x * other), Math.round(y * other));
+    }
+
+    public Integer2 Divide(float other) {
+        return new Integer2(Math.round(x / other), Math.round(y / other));
     }
 }

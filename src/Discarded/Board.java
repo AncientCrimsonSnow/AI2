@@ -1,6 +1,6 @@
-package Core;
+package Discarded;
 
-import Utils.int2;
+import Data.Integer2;
 import lenz.htw.duktus.net.NetworkClient;
 
 import java.util.ArrayList;
@@ -16,7 +16,7 @@ public class Board {
     public static final int BOARD_SIDE_LENGTH = (int) (DEFAULT_BOARD_SIDE_LENGTH * SCALE);
 
     public static Board Instance;
-    public Map<int2, Area> cellAreaMap = new HashMap<>();
+    public Map<Integer2, Area> cellAreaMap = new HashMap<>();
     public ArrayList<Area> areas = new ArrayList();
 
     public Area staticWalls;
@@ -37,7 +37,7 @@ public class Board {
                     areas.add(area = new Area());
                     indicesMap.put(areaId, area);
                 }
-                var cell = new int2(x,y);
+                var cell = new Integer2(x,y);
                 area.cells.add(cell);
                 cellAreaMap.put(cell, area);
             }
@@ -72,24 +72,24 @@ public class Board {
         }
     }
     public void TrySplitArea(Area area){
-        HashSet<int2> openList = new HashSet<>();
-        HashSet<int2> closedList = new HashSet<>();
+        HashSet<Integer2> openList = new HashSet<>();
+        HashSet<Integer2> closedList = new HashSet<>();
 
         var areaIterator = area.cells.iterator();
         openList.add(areaIterator.next());
 
         while (!openList.isEmpty()) {
-            int2 crrCell = openList.iterator().next();
+            Integer2 crrCell = openList.iterator().next();
             openList.remove(crrCell);
             closedList.add(crrCell);
 
-            ArrayList<int2> neighbourCells = new ArrayList<>();
+            ArrayList<Integer2> neighbourCells = new ArrayList<>();
 
-            int2[] cellToCheck = new int2[]{
-                    new int2(crrCell.x - 1, crrCell.y),
-                    new int2(crrCell.x + 1, crrCell.y),
-                    new int2(crrCell.x, crrCell.y - 1),
-                    new int2(crrCell.x, crrCell.y + 1),
+            Integer2[] cellToCheck = new Integer2[]{
+                    new Integer2(crrCell.x - 1, crrCell.y),
+                    new Integer2(crrCell.x + 1, crrCell.y),
+                    new Integer2(crrCell.x, crrCell.y - 1),
+                    new Integer2(crrCell.x, crrCell.y + 1),
             };
 
             for (int i = 0; i < cellToCheck.length; i++) {
@@ -101,7 +101,7 @@ public class Board {
             }
 
             for (int i = 0; i < neighbourCells.size(); i++) {
-                int2 neighbourCell = neighbourCells.get(i);
+                Integer2 neighbourCell = neighbourCells.get(i);
                 if (!openList.contains(neighbourCell) && !closedList.contains(neighbourCell)) {
                     openList.add(neighbourCell);
                 }
@@ -122,14 +122,14 @@ public class Board {
 
             Area area0 = new Area();
 
-            for (int2 closedCell : closedList) {
+            for (Integer2 closedCell : closedList) {
                 cellAreaMap.replace(closedCell, area0);
                 area0.cells.add(closedCell);
             }
 
             for (int p = 0; p != Game.Instance.player.length; p++) {
                 for (int i = 0; i != Game.Instance.player[p].bots.length; i++) {
-                    int2 botPos = Game.Instance.player[p].bots[i].pos;
+                    Integer2 botPos = Game.Instance.player[p].bots[i].pos;
                     Area crrAreaOfBot = cellAreaMap.get(botPos);
                     Game.Instance.player[p].bots[i].crrArea = crrAreaOfBot;
                 }
@@ -140,7 +140,7 @@ public class Board {
         }
     }
 
-    public void RemapCellToArea(int2 cell, Area area){
+    public void RemapCellToArea(Integer2 cell, Area area){
         cellAreaMap.get(cell).cells.remove(cell);
         cellAreaMap.replace(cell, area);
     }

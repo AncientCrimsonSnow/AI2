@@ -1,13 +1,19 @@
 package Testing;
 
-import Core.*;
+import Data.Integer2;
+import Discarded.*;
 import Systems.BoardSystem;
 import Systems.GameSystem;
+import Systems.PathSystem;
 import Utils.ConsoleColors;
 import Utils.Debug;
-import Utils.int2;
 import lenz.htw.duktus.net.Update;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 
@@ -15,8 +21,9 @@ public class Tester {
 
     public static void main(String[] args) {
         var game = GameSystem.InitGame(new MyClient());
-        TestInit(game);
-        UpdateTest(game);
+        //TestInit(game);
+        //UpdateTest(game);
+        TestPathConverter();
     }
 
     private static void TestInit(Data.Game game){
@@ -204,264 +211,264 @@ public class Tester {
                     EqualTest(game.player[p].bots[b].alive, botsAlive[i], String.format("Player[%d], Bot[%d] Alive Check", p, b));
                     if(!botsAlive[i] && !didCheckBotDead[i]){
                         didCheckBotDead[i] = true;
-                        CheckBotDead(new int2(p, b), areaSideLength, game);
+                        CheckBotDead(new Integer2(p, b), areaSideLength, game);
                     }
                 }
             }
         }
     }
 
-    private static void CheckBotDead(int2 bot, float areaSideLength, Data.Game game){
-        if(bot.equals(new int2(2,0))){
+    private static void CheckBotDead(Integer2 bot, float areaSideLength, Data.Game game){
+        if(bot.equals(new Integer2(2,0))){
             EqualTest(BoardSystem.GetAreaCount(game.board), 12, "Bot[2,0] AreaCountCheck");
 
-            EqualTest(game.board.cellAreaMap.get(new int2(0, 0)).occupation, -1, "Bot[2,0] Dead, Area[0,0] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new Integer2(0, 0)).occupation, -1, "Bot[2,0] Dead, Area[0,0] Occupation");
 
-            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength), 0)).occupation, -1, "Bot[2,0] Dead, Area[1,0] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new Integer2(Math.round(areaSideLength), 0)).occupation, -1, "Bot[2,0] Dead, Area[1,0] Occupation");
 
-            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength * 2), 0)).occupation, -1, "Bot[2,0] Dead, Area[2,0] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new Integer2(Math.round(areaSideLength * 2), 0)).occupation, -1, "Bot[2,0] Dead, Area[2,0] Occupation");
 
-            EqualTest(game.board.cellAreaMap.get(new int2(0, Math.round(areaSideLength))).occupation, -1, "Bot[2,0] Dead, Area[0,1] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new Integer2(0, Math.round(areaSideLength))).occupation, -1, "Bot[2,0] Dead, Area[0,1] Occupation");
 
-            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength), Math.round(areaSideLength))).occupation, -1, "Bot[2,0] Dead, Area[1,1] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new Integer2(Math.round(areaSideLength), Math.round(areaSideLength))).occupation, -1, "Bot[2,0] Dead, Area[1,1] Occupation");
 
-            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength * 2), Math.round(areaSideLength))).occupation, -1, "Bot[2,0] Dead, Area[2,1] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new Integer2(Math.round(areaSideLength * 2), Math.round(areaSideLength))).occupation, -1, "Bot[2,0] Dead, Area[2,1] Occupation");
 
 
-            EqualTest(game.board.cellAreaMap.get(new int2(0, Math.round(areaSideLength * 2))).occupation, -1, "Bot[2,0] Dead, Area1[0,2] Occupation");
-            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength * 2f / 3f) + 1, Math.round(areaSideLength * (2f+2f/3f)) + 1)).occupation, -1, "Bot[2,0] Dead, Area2[0,2] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new Integer2(0, Math.round(areaSideLength * 2))).occupation, -1, "Bot[2,0] Dead, Area1[0,2] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new Integer2(Math.round(areaSideLength * 2f / 3f) + 1, Math.round(areaSideLength * (2f+2f/3f)) + 1)).occupation, -1, "Bot[2,0] Dead, Area2[0,2] Occupation");
 
-            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength), Math.round(areaSideLength * 2))).occupation, -1, "Bot[2,0] Dead, Area1[1,2] Occupation");
-            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength + Math.round(areaSideLength / 3f)), Math.round(areaSideLength * (2f+2f/3f)) + 1)).occupation, -1, "Bot[2,0] Dead, Area2[1,2] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new Integer2(Math.round(areaSideLength), Math.round(areaSideLength * 2))).occupation, -1, "Bot[2,0] Dead, Area1[1,2] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new Integer2(Math.round(areaSideLength + Math.round(areaSideLength / 3f)), Math.round(areaSideLength * (2f+2f/3f)) + 1)).occupation, -1, "Bot[2,0] Dead, Area2[1,2] Occupation");
 
-            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength * 2), Math.round(areaSideLength * 2))).occupation, -1, "Bot[2,0] Dead, Area[2,2] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new Integer2(Math.round(areaSideLength * 2), Math.round(areaSideLength * 2))).occupation, -1, "Bot[2,0] Dead, Area[2,2] Occupation");
         }
-        else if(bot.equals(new int2(2,1))){
+        else if(bot.equals(new Integer2(2,1))){
             EqualTest(BoardSystem.GetAreaCount(game.board), 12, "Bot[2,1] AreaCountCheck");
 
-            EqualTest(game.board.cellAreaMap.get(new int2(0, 0)).occupation, -1, "Bot[2,1] Dead, Area[0,0] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new Integer2(0, 0)).occupation, -1, "Bot[2,1] Dead, Area[0,0] Occupation");
 
-            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength), 0)).occupation, -1, "Bot[2,1] Dead, Area[1,0] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new Integer2(Math.round(areaSideLength), 0)).occupation, -1, "Bot[2,1] Dead, Area[1,0] Occupation");
 
-            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength * 2), 0)).occupation, -1, "Bot[2,1] Dead, Area[2,0] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new Integer2(Math.round(areaSideLength * 2), 0)).occupation, -1, "Bot[2,1] Dead, Area[2,0] Occupation");
 
-            EqualTest(game.board.cellAreaMap.get(new int2(0, Math.round(areaSideLength))).occupation, -1, "Bot[2,1] Dead, Area[0,1] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new Integer2(0, Math.round(areaSideLength))).occupation, -1, "Bot[2,1] Dead, Area[0,1] Occupation");
 
-            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength), Math.round(areaSideLength))).occupation, -1, "Bot[2,1] Dead, Area[1,1] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new Integer2(Math.round(areaSideLength), Math.round(areaSideLength))).occupation, -1, "Bot[2,1] Dead, Area[1,1] Occupation");
 
-            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength * 2), Math.round(areaSideLength))).occupation, -1, "Bot[2,1] Dead, Area[2,1] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new Integer2(Math.round(areaSideLength * 2), Math.round(areaSideLength))).occupation, -1, "Bot[2,1] Dead, Area[2,1] Occupation");
 
-            EqualTest(game.board.cellAreaMap.get(new int2(0, Math.round(areaSideLength * 2))).occupation, -1, "Bot[2,1] Dead, Area1[0,2] Occupation");
-            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength * 2f / 3f) + 1, Math.round(areaSideLength * (2f+2f/3f)) + 1)).occupation, -1, "Bot[2,1] Dead, Area2[0,2] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new Integer2(0, Math.round(areaSideLength * 2))).occupation, -1, "Bot[2,1] Dead, Area1[0,2] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new Integer2(Math.round(areaSideLength * 2f / 3f) + 1, Math.round(areaSideLength * (2f+2f/3f)) + 1)).occupation, -1, "Bot[2,1] Dead, Area2[0,2] Occupation");
 
-            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength), Math.round(areaSideLength * 2))).occupation, -1, "Bot[2,1] Dead, Area1[1,2] Occupation");
-            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength + Math.round(areaSideLength / 3f)), Math.round(areaSideLength * (2f+2f/3f)) + 1)).occupation, -1, "Bot[2,1] Dead, Area2[1,2] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new Integer2(Math.round(areaSideLength), Math.round(areaSideLength * 2))).occupation, -1, "Bot[2,1] Dead, Area1[1,2] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new Integer2(Math.round(areaSideLength + Math.round(areaSideLength / 3f)), Math.round(areaSideLength * (2f+2f/3f)) + 1)).occupation, -1, "Bot[2,1] Dead, Area2[1,2] Occupation");
 
-            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength * 2), Math.round(areaSideLength * 2))).occupation, -1, "Bot[2,1] Dead, Area[2,2] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new Integer2(Math.round(areaSideLength * 2), Math.round(areaSideLength * 2))).occupation, -1, "Bot[2,1] Dead, Area[2,2] Occupation");
         }
-        else if(bot.equals(new int2(1,0))){
+        else if(bot.equals(new Integer2(1,0))){
             EqualTest(BoardSystem.GetAreaCount(game.board), 13, "Bot[1,0] AreaCountCheck");
 
-            EqualTest(game.board.cellAreaMap.get(new int2(0, 0)).occupation, -1, "Bot[1,0] Dead, Area1[0,0] Occupation");
-            EqualTest(game.board.cellAreaMap.get(new int2(0, Math.round(areaSideLength * 0.5f + 1))).occupation, -1, "Bot[1,0] Dead, Area2[0,0] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new Integer2(0, 0)).occupation, -1, "Bot[1,0] Dead, Area1[0,0] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new Integer2(0, Math.round(areaSideLength * 0.5f + 1))).occupation, -1, "Bot[1,0] Dead, Area2[0,0] Occupation");
 
-            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength), 0)).occupation, -1, "Bot[1,0] Dead, Area[0,1] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new Integer2(Math.round(areaSideLength), 0)).occupation, -1, "Bot[1,0] Dead, Area[0,1] Occupation");
 
-            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength * 2), 0)).occupation, -1, "Bot[1,0] Dead, Area[0,2] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new Integer2(Math.round(areaSideLength * 2), 0)).occupation, -1, "Bot[1,0] Dead, Area[0,2] Occupation");
 
-            EqualTest(game.board.cellAreaMap.get(new int2(0, Math.round(areaSideLength))).occupation, -1, "Bot[1,0] Dead, Area[1,0] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new Integer2(0, Math.round(areaSideLength))).occupation, -1, "Bot[1,0] Dead, Area[1,0] Occupation");
 
-            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength), Math.round(areaSideLength))).occupation, -1, "Bot[1,0] Dead, Area[1,1] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new Integer2(Math.round(areaSideLength), Math.round(areaSideLength))).occupation, -1, "Bot[1,0] Dead, Area[1,1] Occupation");
 
-            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength * 2), Math.round(areaSideLength))).occupation, -1, "Bot[1,0] Dead, Area[2,1] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new Integer2(Math.round(areaSideLength * 2), Math.round(areaSideLength))).occupation, -1, "Bot[1,0] Dead, Area[2,1] Occupation");
 
-            EqualTest(game.board.cellAreaMap.get(new int2(0, Math.round(areaSideLength * 2))).occupation, -1, "Bot[1,0] Dead, Area1[0,2] Occupation");
-            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength * 2f / 3f) + 1, Math.round(areaSideLength * (2f+2f/3f)) + 1)).occupation, -1, "Bot[1,0] Dead, Area2[0,2] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new Integer2(0, Math.round(areaSideLength * 2))).occupation, -1, "Bot[1,0] Dead, Area1[0,2] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new Integer2(Math.round(areaSideLength * 2f / 3f) + 1, Math.round(areaSideLength * (2f+2f/3f)) + 1)).occupation, -1, "Bot[1,0] Dead, Area2[0,2] Occupation");
 
-            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength), Math.round(areaSideLength * 2))).occupation, -1, "Bot[1,0] Dead, Area1[1,2] Occupation");
-            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength + Math.round(areaSideLength / 3f)), Math.round(areaSideLength * (2f+2f/3f)) + 1)).occupation, -1, "Bot[1,0] Dead, Area2[1,2] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new Integer2(Math.round(areaSideLength), Math.round(areaSideLength * 2))).occupation, -1, "Bot[1,0] Dead, Area1[1,2] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new Integer2(Math.round(areaSideLength + Math.round(areaSideLength / 3f)), Math.round(areaSideLength * (2f+2f/3f)) + 1)).occupation, -1, "Bot[1,0] Dead, Area2[1,2] Occupation");
 
-            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength * 2), Math.round(areaSideLength * 2))).occupation, -1, "Bot[1,0] Dead, Area[2,2] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new Integer2(Math.round(areaSideLength * 2), Math.round(areaSideLength * 2))).occupation, -1, "Bot[1,0] Dead, Area[2,2] Occupation");
         }
-        else if(bot.equals(new int2(0,0))){
+        else if(bot.equals(new Integer2(0,0))){
             EqualTest(BoardSystem.GetAreaCount(game.board), 20, "Bot[0,0] AreaCountCheck");
 
-            EqualTest(game.board.cellAreaMap.get(new int2(0, 0)).occupation, -1, "Bot[0,0] Dead, Area1[0,0] Occupation");
-            EqualTest(game.board.cellAreaMap.get(new int2(0, Math.round(areaSideLength * 0.5f + 1))).occupation, -1, "Bot[0,0] Dead, Area2[0,0] Occupation");
-            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength/3f) + 1, 0)).occupation, -1, "Bot[0,0] Dead, Area3[0,0] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new Integer2(0, 0)).occupation, -1, "Bot[0,0] Dead, Area1[0,0] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new Integer2(0, Math.round(areaSideLength * 0.5f + 1))).occupation, -1, "Bot[0,0] Dead, Area2[0,0] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new Integer2(Math.round(areaSideLength/3f) + 1, 0)).occupation, -1, "Bot[0,0] Dead, Area3[0,0] Occupation");
 
-            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength), 0)).occupation, 0, "Bot[0,0] Dead, Area1[1,0] Occupation");
-            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength), Math.round(areaSideLength * 0.5f) + 1)).occupation, 0, "Bot[0,0] Dead, Area2[1,0] Occupation");
-            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength * (1f + 2f/3f)) + 3, 0)).occupation, -1, "Bot[0,0] Dead, Area3[1,0] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new Integer2(Math.round(areaSideLength), 0)).occupation, 0, "Bot[0,0] Dead, Area1[1,0] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new Integer2(Math.round(areaSideLength), Math.round(areaSideLength * 0.5f) + 1)).occupation, 0, "Bot[0,0] Dead, Area2[1,0] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new Integer2(Math.round(areaSideLength * (1f + 2f/3f)) + 3, 0)).occupation, -1, "Bot[0,0] Dead, Area3[1,0] Occupation");
 
-            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength * 2), 0)).occupation, -1, "Bot[0,0] Dead, Area1[2,0] Occupation");
-            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength * (2f + 1f/3f)) + 1,  0)).occupation, -1, "Bot[0,0] Dead, Area2[2,0] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new Integer2(Math.round(areaSideLength * 2), 0)).occupation, -1, "Bot[0,0] Dead, Area1[2,0] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new Integer2(Math.round(areaSideLength * (2f + 1f/3f)) + 1,  0)).occupation, -1, "Bot[0,0] Dead, Area2[2,0] Occupation");
 
-            EqualTest(game.board.cellAreaMap.get(new int2(0, Math.round(areaSideLength))).occupation, -1, "Bot[0,0] Dead, Area[0,1] Occupation");
-            EqualTest(game.board.cellAreaMap.get(new int2(0, Math.round(areaSideLength * 1.5f) + 1)).occupation, -1, "Bot[0,0] Dead, Area[0,1] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new Integer2(0, Math.round(areaSideLength))).occupation, -1, "Bot[0,0] Dead, Area[0,1] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new Integer2(0, Math.round(areaSideLength * 1.5f) + 1)).occupation, -1, "Bot[0,0] Dead, Area[0,1] Occupation");
 
-            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength), Math.round(areaSideLength))).occupation, 0, "Bot[0,0] Dead, Area[1,1] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new Integer2(Math.round(areaSideLength), Math.round(areaSideLength))).occupation, 0, "Bot[0,0] Dead, Area[1,1] Occupation");
 
-            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength * 2), Math.round(areaSideLength))).occupation, 1, "Bot[0,0] Dead, Area[2,1] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new Integer2(Math.round(areaSideLength * 2), Math.round(areaSideLength))).occupation, 1, "Bot[0,0] Dead, Area[2,1] Occupation");
 
-            EqualTest(game.board.cellAreaMap.get(new int2(0, Math.round(areaSideLength * 2))).occupation, -1, "Bot[0,0] Dead, Area1[0,2] Occupation");
-            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength * 2f / 3f) + 1, Math.round(areaSideLength * (2f+2f/3f)) + 1)).occupation, -1, "Bot[0,0] Dead, Area2[0,2] Occupation");
-            EqualTest(game.board.cellAreaMap.get(new int2(0, Math.round(areaSideLength * 2.5f) + 1)).occupation, -1, "Bot[0,0] Dead, Area3[0,2] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new Integer2(0, Math.round(areaSideLength * 2))).occupation, -1, "Bot[0,0] Dead, Area1[0,2] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new Integer2(Math.round(areaSideLength * 2f / 3f) + 1, Math.round(areaSideLength * (2f+2f/3f)) + 1)).occupation, -1, "Bot[0,0] Dead, Area2[0,2] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new Integer2(0, Math.round(areaSideLength * 2.5f) + 1)).occupation, -1, "Bot[0,0] Dead, Area3[0,2] Occupation");
 
-            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength), Math.round(areaSideLength * 2))).occupation, 0, "Bot[0,0] Dead, Area1[1,2] Occupation");
-            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength), Math.round(areaSideLength * 3)- 1)).occupation, -1, "Bot[0,0] Dead, Area2[1,2] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new Integer2(Math.round(areaSideLength), Math.round(areaSideLength * 2))).occupation, 0, "Bot[0,0] Dead, Area1[1,2] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new Integer2(Math.round(areaSideLength), Math.round(areaSideLength * 3)- 1)).occupation, -1, "Bot[0,0] Dead, Area2[1,2] Occupation");
 
-            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength * 2), Math.round(areaSideLength * 2))).occupation, -1, "Bot[0,0] Dead, Area1[2,2] Occupation");
-            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength * 3)- 1, Math.round(areaSideLength * 3)- 1)).occupation, -1, "Bot[0,0] Dead, Area2[2,2] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new Integer2(Math.round(areaSideLength * 2), Math.round(areaSideLength * 2))).occupation, -1, "Bot[0,0] Dead, Area1[2,2] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new Integer2(Math.round(areaSideLength * 3)- 1, Math.round(areaSideLength * 3)- 1)).occupation, -1, "Bot[0,0] Dead, Area2[2,2] Occupation");
         }
-        else if(bot.equals(new int2(0,1))){
+        else if(bot.equals(new Integer2(0,1))){
             EqualTest(BoardSystem.GetAreaCount(game.board), 21, "Bot[0,1] AreaCountCheck");
 
-            EqualTest(game.board.cellAreaMap.get(new int2(0, 0)).occupation, -1, "Bot[0,1] Dead, Area1[0,0] Occupation");
-            EqualTest(game.board.cellAreaMap.get(new int2(0, Math.round(areaSideLength * 0.5f + 1))).occupation, -1, "Bot[0,1] Dead, Area2[0,0] Occupation");
-            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength/3f) + 1, 0)).occupation, -1, "Bot[0,1] Dead, Area3[0,0] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new Integer2(0, 0)).occupation, -1, "Bot[0,1] Dead, Area1[0,0] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new Integer2(0, Math.round(areaSideLength * 0.5f + 1))).occupation, -1, "Bot[0,1] Dead, Area2[0,0] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new Integer2(Math.round(areaSideLength/3f) + 1, 0)).occupation, -1, "Bot[0,1] Dead, Area3[0,0] Occupation");
 
-            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength), 0)).occupation, 0, "Bot[0,1] Dead, Area1[1,0] Occupation");
-            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength), Math.round(areaSideLength * 0.5f) + 1)).occupation, 0, "Bot[0,1] Dead, Area2[1,0] Occupation");
-            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength * (1f + 2f/3f)) + 3, 0)).occupation, -1, "Bot[0,1] Dead, Area3[1,0] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new Integer2(Math.round(areaSideLength), 0)).occupation, 0, "Bot[0,1] Dead, Area1[1,0] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new Integer2(Math.round(areaSideLength), Math.round(areaSideLength * 0.5f) + 1)).occupation, 0, "Bot[0,1] Dead, Area2[1,0] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new Integer2(Math.round(areaSideLength * (1f + 2f/3f)) + 3, 0)).occupation, -1, "Bot[0,1] Dead, Area3[1,0] Occupation");
 
-            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength * 2), 0)).occupation, -1, "Bot[0,1] Dead, Area1[2,0] Occupation");
-            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength * (2f + 1f/3f)) + 1,  0)).occupation, -1, "Bot[0,1] Dead, Area2[2,0] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new Integer2(Math.round(areaSideLength * 2), 0)).occupation, -1, "Bot[0,1] Dead, Area1[2,0] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new Integer2(Math.round(areaSideLength * (2f + 1f/3f)) + 1,  0)).occupation, -1, "Bot[0,1] Dead, Area2[2,0] Occupation");
 
-            EqualTest(game.board.cellAreaMap.get(new int2(0, Math.round(areaSideLength))).occupation, -1, "Bot[0,1] Dead, Area[0,1] Occupation");
-            EqualTest(game.board.cellAreaMap.get(new int2(0, Math.round(areaSideLength * 1.5f) + 1)).occupation, -1, "Bot[0,1] Dead, Area[0,1] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new Integer2(0, Math.round(areaSideLength))).occupation, -1, "Bot[0,1] Dead, Area[0,1] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new Integer2(0, Math.round(areaSideLength * 1.5f) + 1)).occupation, -1, "Bot[0,1] Dead, Area[0,1] Occupation");
 
-            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength), Math.round(areaSideLength))).occupation, 0, "Bot[0,1] Dead, Area1[1,1] Occupation");
-            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength), Math.round(areaSideLength * 1.5f) + 1)).occupation, 0, "Bot[0,1] Dead, Area2[1,1] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new Integer2(Math.round(areaSideLength), Math.round(areaSideLength))).occupation, 0, "Bot[0,1] Dead, Area1[1,1] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new Integer2(Math.round(areaSideLength), Math.round(areaSideLength * 1.5f) + 1)).occupation, 0, "Bot[0,1] Dead, Area2[1,1] Occupation");
 
-            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength * 2), Math.round(areaSideLength))).occupation, 1, "Bot[0,1] Dead, Area[2,1] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new Integer2(Math.round(areaSideLength * 2), Math.round(areaSideLength))).occupation, 1, "Bot[0,1] Dead, Area[2,1] Occupation");
 
-            EqualTest(game.board.cellAreaMap.get(new int2(0, Math.round(areaSideLength * 2))).occupation, -1, "Bot[0,1] Dead, Area1[0,2] Occupation");
-            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength * 2f / 3f) + 1, Math.round(areaSideLength * (2f+2f/3f)) + 1)).occupation, -1, "Bot[0,1] Dead, Area2[0,2] Occupation");
-            EqualTest(game.board.cellAreaMap.get(new int2(0, Math.round(areaSideLength * 2.5f) + 1)).occupation, -1, "Bot[0,1] Dead, Area3[0,2] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new Integer2(0, Math.round(areaSideLength * 2))).occupation, -1, "Bot[0,1] Dead, Area1[0,2] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new Integer2(Math.round(areaSideLength * 2f / 3f) + 1, Math.round(areaSideLength * (2f+2f/3f)) + 1)).occupation, -1, "Bot[0,1] Dead, Area2[0,2] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new Integer2(0, Math.round(areaSideLength * 2.5f) + 1)).occupation, -1, "Bot[0,1] Dead, Area3[0,2] Occupation");
 
-            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength), Math.round(areaSideLength * 2))).occupation, 0, "Bot[0,1] Dead, Area1[1,2] Occupation");
-            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength), Math.round(areaSideLength * 3)- 1)).occupation, -1, "Bot[0,1] Dead, Area2[1,2] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new Integer2(Math.round(areaSideLength), Math.round(areaSideLength * 2))).occupation, 0, "Bot[0,1] Dead, Area1[1,2] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new Integer2(Math.round(areaSideLength), Math.round(areaSideLength * 3)- 1)).occupation, -1, "Bot[0,1] Dead, Area2[1,2] Occupation");
 
-            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength * 2), Math.round(areaSideLength * 2))).occupation, -1, "Bot[0,1] Dead, Area1[2,2] Occupation");
-            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength * 3)- 1, Math.round(areaSideLength * 3)- 1)).occupation, -1, "Bot[0,1] Dead, Area2[2,2] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new Integer2(Math.round(areaSideLength * 2), Math.round(areaSideLength * 2))).occupation, -1, "Bot[0,1] Dead, Area1[2,2] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new Integer2(Math.round(areaSideLength * 3)- 1, Math.round(areaSideLength * 3)- 1)).occupation, -1, "Bot[0,1] Dead, Area2[2,2] Occupation");
         }
-        else if(bot.equals(new int2(1,1))){
+        else if(bot.equals(new Integer2(1,1))){
             EqualTest(BoardSystem.GetAreaCount(game.board), 26, "Bot[1,1] AreaCountCheck");
 
-            EqualTest(game.board.cellAreaMap.get(new int2(0, 0)).occupation, -1, "Bot[1,1] Dead, Area1[0,0] Occupation");
-            EqualTest(game.board.cellAreaMap.get(new int2(0, Math.round(areaSideLength * 0.5f + 1))).occupation, -1, "Bot[1,1] Dead, Area2[0,0] Occupation");
-            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength/3f) + 1, 0)).occupation, -1, "Bot[1,1] Dead, Area3[0,0] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new Integer2(0, 0)).occupation, -1, "Bot[1,1] Dead, Area1[0,0] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new Integer2(0, Math.round(areaSideLength * 0.5f + 1))).occupation, -1, "Bot[1,1] Dead, Area2[0,0] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new Integer2(Math.round(areaSideLength/3f) + 1, 0)).occupation, -1, "Bot[1,1] Dead, Area3[0,0] Occupation");
 
-            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength), 0)).occupation, 0, "Bot[1,1] Dead, Area1[1,0] Occupation");
-            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength), Math.round(areaSideLength * 0.5f) + 1)).occupation, 0, "Bot[1,1] Dead, Area2[1,0] Occupation");
-            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength * (1f + 2f/3f)) + 3, 0)).occupation, -1, "Bot[1,1] Dead, Area3[1,0] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new Integer2(Math.round(areaSideLength), 0)).occupation, 0, "Bot[1,1] Dead, Area1[1,0] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new Integer2(Math.round(areaSideLength), Math.round(areaSideLength * 0.5f) + 1)).occupation, 0, "Bot[1,1] Dead, Area2[1,0] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new Integer2(Math.round(areaSideLength * (1f + 2f/3f)) + 3, 0)).occupation, -1, "Bot[1,1] Dead, Area3[1,0] Occupation");
 
-            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength * 2), 0)).occupation, -1, "Bot[1,1] Dead, Area1[2,0] Occupation");
-            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength * (2f + 1f/3f)) + 1,  0)).occupation, 2, "Bot[1,1] Dead, Area2[2,0] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new Integer2(Math.round(areaSideLength * 2), 0)).occupation, -1, "Bot[1,1] Dead, Area1[2,0] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new Integer2(Math.round(areaSideLength * (2f + 1f/3f)) + 1,  0)).occupation, 2, "Bot[1,1] Dead, Area2[2,0] Occupation");
 
-            EqualTest(game.board.cellAreaMap.get(new int2(0, Math.round(areaSideLength))).occupation, -1, "Bot[1,1] Dead, Area[0,1] Occupation");
-            EqualTest(game.board.cellAreaMap.get(new int2(0, Math.round(areaSideLength * 1.5f) + 1)).occupation, -1, "Bot[1,1] Dead, Area[0,1] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new Integer2(0, Math.round(areaSideLength))).occupation, -1, "Bot[1,1] Dead, Area[0,1] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new Integer2(0, Math.round(areaSideLength * 1.5f) + 1)).occupation, -1, "Bot[1,1] Dead, Area[0,1] Occupation");
 
-            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength), Math.round(areaSideLength))).occupation, 0, "Bot[1,1] Dead, Area1[1,1] Occupation");
-            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength), Math.round(areaSideLength * 1.5f) + 1)).occupation, 0, "Bot[1,1] Dead, Area2[1,1] Occupation");
-            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength * (1f + 2f/3f)) + 1, Math.round(areaSideLength))).occupation, 0, "Bot[1,1] Dead, Area3[1,1] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new Integer2(Math.round(areaSideLength), Math.round(areaSideLength))).occupation, 0, "Bot[1,1] Dead, Area1[1,1] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new Integer2(Math.round(areaSideLength), Math.round(areaSideLength * 1.5f) + 1)).occupation, 0, "Bot[1,1] Dead, Area2[1,1] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new Integer2(Math.round(areaSideLength * (1f + 2f/3f)) + 1, Math.round(areaSideLength))).occupation, 0, "Bot[1,1] Dead, Area3[1,1] Occupation");
 
-            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength * 2), Math.round(areaSideLength))).occupation, 1, "Bot[1,1] Dead, Area1[2,1] Occupation");
-            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength * (2f + 1f/3f) + 1), Math.round(areaSideLength))).occupation, 1, "Bot[1,1] Dead, Area2[2,1] Occupation");
-            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength * 3)- 1, Math.round(areaSideLength))).occupation, 1, "Bot[1,1] Dead, Area3[2,1] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new Integer2(Math.round(areaSideLength * 2), Math.round(areaSideLength))).occupation, 1, "Bot[1,1] Dead, Area1[2,1] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new Integer2(Math.round(areaSideLength * (2f + 1f/3f) + 1), Math.round(areaSideLength))).occupation, 1, "Bot[1,1] Dead, Area2[2,1] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new Integer2(Math.round(areaSideLength * 3)- 1, Math.round(areaSideLength))).occupation, 1, "Bot[1,1] Dead, Area3[2,1] Occupation");
 
-            EqualTest(game.board.cellAreaMap.get(new int2(0, Math.round(areaSideLength * 2))).occupation, -1, "Bot[1,1] Dead, Area1[0,2] Occupation");
-            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength * 2f / 3f) + 1, Math.round(areaSideLength * (2f+2f/3f)) + 1)).occupation, -1, "Bot[1,1] Dead, Area2[0,2] Occupation");
-            EqualTest(game.board.cellAreaMap.get(new int2(0, Math.round(areaSideLength * 2.5f) + 1)).occupation, -1, "Bot[1,1] Dead, Area3[0,2] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new Integer2(0, Math.round(areaSideLength * 2))).occupation, -1, "Bot[1,1] Dead, Area1[0,2] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new Integer2(Math.round(areaSideLength * 2f / 3f) + 1, Math.round(areaSideLength * (2f+2f/3f)) + 1)).occupation, -1, "Bot[1,1] Dead, Area2[0,2] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new Integer2(0, Math.round(areaSideLength * 2.5f) + 1)).occupation, -1, "Bot[1,1] Dead, Area3[0,2] Occupation");
 
-            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength), Math.round(areaSideLength * 2))).occupation, 1, "Bot[1,1] Dead, Area1[1,2] Occupation");
-            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength), Math.round(areaSideLength * 3)- 1)).occupation, -1, "Bot[1,1] Dead, Area2[1,2] Occupation");
-            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength * 2f) - 1, Math.round(areaSideLength * 3f) - 1)).occupation, 1, "Bot[1,1] Dead, Area3[1,2] Occupation");
-            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength * (1f + 2f/3f) + 1), Math.round(areaSideLength * 2))).occupation, 1, "Bot[1,1] Dead, Area4[1,2] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new Integer2(Math.round(areaSideLength), Math.round(areaSideLength * 2))).occupation, 1, "Bot[1,1] Dead, Area1[1,2] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new Integer2(Math.round(areaSideLength), Math.round(areaSideLength * 3)- 1)).occupation, -1, "Bot[1,1] Dead, Area2[1,2] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new Integer2(Math.round(areaSideLength * 2f) - 1, Math.round(areaSideLength * 3f) - 1)).occupation, 1, "Bot[1,1] Dead, Area3[1,2] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new Integer2(Math.round(areaSideLength * (1f + 2f/3f) + 1), Math.round(areaSideLength * 2))).occupation, 1, "Bot[1,1] Dead, Area4[1,2] Occupation");
 
-            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength * 2), Math.round(areaSideLength * 2))).occupation, 1, "Bot[1,1] Dead, Area1[2,2] Occupation");
-            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength * 3)- 1, Math.round(areaSideLength * 3)- 1)).occupation, -1, "Bot[1,1] Dead, Area2[2,2] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new Integer2(Math.round(areaSideLength * 2), Math.round(areaSideLength * 2))).occupation, 1, "Bot[1,1] Dead, Area1[2,2] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new Integer2(Math.round(areaSideLength * 3)- 1, Math.round(areaSideLength * 3)- 1)).occupation, -1, "Bot[1,1] Dead, Area2[2,2] Occupation");
         }
 
-        else if(bot.equals(new int2(1,2))){
+        else if(bot.equals(new Integer2(1,2))){
             EqualTest(BoardSystem.GetAreaCount(game.board), 27, "Bot[1,2] AreaCountCheck");
 
-            EqualTest(game.board.cellAreaMap.get(new int2(0, 0)).occupation, -1, "Bot[1,2] Dead, Area1[0,0] Occupation");
-            EqualTest(game.board.cellAreaMap.get(new int2(0, Math.round(areaSideLength * 0.5f + 1))).occupation, -1, "Bot[1,2] Dead, Area2[0,0] Occupation");
-            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength/3f) + 1, 0)).occupation, -1, "Bot[1,2] Dead, Area3[0,0] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new Integer2(0, 0)).occupation, -1, "Bot[1,2] Dead, Area1[0,0] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new Integer2(0, Math.round(areaSideLength * 0.5f + 1))).occupation, -1, "Bot[1,2] Dead, Area2[0,0] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new Integer2(Math.round(areaSideLength/3f) + 1, 0)).occupation, -1, "Bot[1,2] Dead, Area3[0,0] Occupation");
 
-            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength), 0)).occupation, 0, "Bot[1,2] Dead, Area1[1,0] Occupation");
-            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength), Math.round(areaSideLength * 0.5f) + 1)).occupation, 0, "Bot[1,2] Dead, Area2[1,0] Occupation");
-            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength * (1f + 2f/3f)) + 3, 0)).occupation, -1, "Bot[1,2] Dead, Area3[1,0] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new Integer2(Math.round(areaSideLength), 0)).occupation, 0, "Bot[1,2] Dead, Area1[1,0] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new Integer2(Math.round(areaSideLength), Math.round(areaSideLength * 0.5f) + 1)).occupation, 0, "Bot[1,2] Dead, Area2[1,0] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new Integer2(Math.round(areaSideLength * (1f + 2f/3f)) + 3, 0)).occupation, -1, "Bot[1,2] Dead, Area3[1,0] Occupation");
 
-            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength * 2), 0)).occupation, -1, "Bot[1,2] Dead, Area1[2,0] Occupation");
-            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength * (2f + 1f/3f)) + 1,  0)).occupation, 2, "Bot[1,2] Dead, Area2[2,0] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new Integer2(Math.round(areaSideLength * 2), 0)).occupation, -1, "Bot[1,2] Dead, Area1[2,0] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new Integer2(Math.round(areaSideLength * (2f + 1f/3f)) + 1,  0)).occupation, 2, "Bot[1,2] Dead, Area2[2,0] Occupation");
 
-            EqualTest(game.board.cellAreaMap.get(new int2(0, Math.round(areaSideLength))).occupation, -1, "Bot[1,2] Dead, Area[0,1] Occupation");
-            EqualTest(game.board.cellAreaMap.get(new int2(0, Math.round(areaSideLength * 1.5f) + 1)).occupation, -1, "Bot[1,2] Dead, Area[0,1] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new Integer2(0, Math.round(areaSideLength))).occupation, -1, "Bot[1,2] Dead, Area[0,1] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new Integer2(0, Math.round(areaSideLength * 1.5f) + 1)).occupation, -1, "Bot[1,2] Dead, Area[0,1] Occupation");
 
-            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength), Math.round(areaSideLength))).occupation, 0, "Bot[1,2] Dead, Area1[1,1] Occupation");
-            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength), Math.round(areaSideLength * 1.5f) + 1)).occupation, 0, "Bot[1,2] Dead, Area2[1,1] Occupation");
-            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength * (1f + 2f/3f)) + 1, Math.round(areaSideLength))).occupation, 0, "Bot[1,2] Dead, Area3[1,1] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new Integer2(Math.round(areaSideLength), Math.round(areaSideLength))).occupation, 0, "Bot[1,2] Dead, Area1[1,1] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new Integer2(Math.round(areaSideLength), Math.round(areaSideLength * 1.5f) + 1)).occupation, 0, "Bot[1,2] Dead, Area2[1,1] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new Integer2(Math.round(areaSideLength * (1f + 2f/3f)) + 1, Math.round(areaSideLength))).occupation, 0, "Bot[1,2] Dead, Area3[1,1] Occupation");
 
-            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength * 2), Math.round(areaSideLength))).occupation, 1, "Bot[1,2] Dead, Area1[2,1] Occupation");
-            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength * (2f + 1f/3f) + 1), Math.round(areaSideLength))).occupation, 1, "Bot[1,2] Dead, Area2[2,1] Occupation");
-            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength * 3)- 1, Math.round(areaSideLength))).occupation, 1, "Bot[1,2] Dead, Area3[2,1] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new Integer2(Math.round(areaSideLength * 2), Math.round(areaSideLength))).occupation, 1, "Bot[1,2] Dead, Area1[2,1] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new Integer2(Math.round(areaSideLength * (2f + 1f/3f) + 1), Math.round(areaSideLength))).occupation, 1, "Bot[1,2] Dead, Area2[2,1] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new Integer2(Math.round(areaSideLength * 3)- 1, Math.round(areaSideLength))).occupation, 1, "Bot[1,2] Dead, Area3[2,1] Occupation");
 
-            EqualTest(game.board.cellAreaMap.get(new int2(0, Math.round(areaSideLength * 2))).occupation, -1, "Bot[1,2] Dead, Area1[0,2] Occupation");
-            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength * 2f / 3f) + 1, Math.round(areaSideLength * (2f+2f/3f)) + 1)).occupation, -1, "Bot[1,2] Dead, Area2[0,2] Occupation");
-            EqualTest(game.board.cellAreaMap.get(new int2(0, Math.round(areaSideLength * 2.5f) + 1)).occupation, -1, "Bot[1,2] Dead, Area3[0,2] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new Integer2(0, Math.round(areaSideLength * 2))).occupation, -1, "Bot[1,2] Dead, Area1[0,2] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new Integer2(Math.round(areaSideLength * 2f / 3f) + 1, Math.round(areaSideLength * (2f+2f/3f)) + 1)).occupation, -1, "Bot[1,2] Dead, Area2[0,2] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new Integer2(0, Math.round(areaSideLength * 2.5f) + 1)).occupation, -1, "Bot[1,2] Dead, Area3[0,2] Occupation");
 
-            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength), Math.round(areaSideLength * 2))).occupation, 1, "Bot[1,2] Dead, Area1[1,2] Occupation");
-            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength), Math.round(areaSideLength * 3)- 1)).occupation, -1, "Bot[1,2] Dead, Area2[1,2] Occupation");
-            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength * 2f) - 1, Math.round(areaSideLength * 3f) - 1)).occupation, 1, "Bot[1,2] Dead, Area3[1,2] Occupation");
-            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength * (1f + 2f/3f) + 1), Math.round(areaSideLength * 2))).occupation, 1, "Bot[1,2] Dead, Area4[1,2] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new Integer2(Math.round(areaSideLength), Math.round(areaSideLength * 2))).occupation, 1, "Bot[1,2] Dead, Area1[1,2] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new Integer2(Math.round(areaSideLength), Math.round(areaSideLength * 3)- 1)).occupation, -1, "Bot[1,2] Dead, Area2[1,2] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new Integer2(Math.round(areaSideLength * 2f) - 1, Math.round(areaSideLength * 3f) - 1)).occupation, 1, "Bot[1,2] Dead, Area3[1,2] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new Integer2(Math.round(areaSideLength * (1f + 2f/3f) + 1), Math.round(areaSideLength * 2))).occupation, 1, "Bot[1,2] Dead, Area4[1,2] Occupation");
 
-            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength * 2), Math.round(areaSideLength * 2))).occupation, 1, "Bot[1,2] Dead, Area1[2,2] Occupation");
-            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength * 3)- 1, Math.round(areaSideLength * 3)- 1)).occupation, -1, "Bot[1,2] Dead, Area2[2,2] Occupation");
-            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength * 2.5f), Math.round(areaSideLength * 2))).occupation, 1, "Bot[1,2] Dead, Area3[2,2] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new Integer2(Math.round(areaSideLength * 2), Math.round(areaSideLength * 2))).occupation, 1, "Bot[1,2] Dead, Area1[2,2] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new Integer2(Math.round(areaSideLength * 3)- 1, Math.round(areaSideLength * 3)- 1)).occupation, -1, "Bot[1,2] Dead, Area2[2,2] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new Integer2(Math.round(areaSideLength * 2.5f), Math.round(areaSideLength * 2))).occupation, 1, "Bot[1,2] Dead, Area3[2,2] Occupation");
         }
-        else if(bot.equals(new int2(0,2))){
+        else if(bot.equals(new Integer2(0,2))){
             EqualTest(BoardSystem.GetAreaCount(game.board), 28, "Bot[0,2] AreaCountCheck");
 
-            EqualTest(game.board.cellAreaMap.get(new int2(0, 0)).occupation, -1, "Bot[0,2] Dead, Area1[0,0] Occupation");
-            EqualTest(game.board.cellAreaMap.get(new int2(0, Math.round(areaSideLength * 0.5f + 1))).occupation, -1, "Bot[0,2] Dead, Area2[0,0] Occupation");
-            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength/3f) + 1, 0)).occupation, -1, "Bot[0,2] Dead, Area3[0,0] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new Integer2(0, 0)).occupation, -1, "Bot[0,2] Dead, Area1[0,0] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new Integer2(0, Math.round(areaSideLength * 0.5f + 1))).occupation, -1, "Bot[0,2] Dead, Area2[0,0] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new Integer2(Math.round(areaSideLength/3f) + 1, 0)).occupation, -1, "Bot[0,2] Dead, Area3[0,0] Occupation");
 
-            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength), 0)).occupation, 0, "Bot[0,2] Dead, Area1[1,0] Occupation");
-            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength), Math.round(areaSideLength * 0.5f) + 1)).occupation, 0, "Bot[0,2] Dead, Area2[1,0] Occupation");
-            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength * (1f + 2f/3f)) + 3, 0)).occupation, -1, "Bot[0,2] Dead, Area3[1,0] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new Integer2(Math.round(areaSideLength), 0)).occupation, 0, "Bot[0,2] Dead, Area1[1,0] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new Integer2(Math.round(areaSideLength), Math.round(areaSideLength * 0.5f) + 1)).occupation, 0, "Bot[0,2] Dead, Area2[1,0] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new Integer2(Math.round(areaSideLength * (1f + 2f/3f)) + 3, 0)).occupation, -1, "Bot[0,2] Dead, Area3[1,0] Occupation");
 
-            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength * 2), 0)).occupation, -1, "Bot[0,2] Dead, Area1[2,0] Occupation");
-            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength * (2f + 1f/3f)) + 1,  0)).occupation, 2, "Bot[0,2] Dead, Area2[2,0] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new Integer2(Math.round(areaSideLength * 2), 0)).occupation, -1, "Bot[0,2] Dead, Area1[2,0] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new Integer2(Math.round(areaSideLength * (2f + 1f/3f)) + 1,  0)).occupation, 2, "Bot[0,2] Dead, Area2[2,0] Occupation");
 
-            EqualTest(game.board.cellAreaMap.get(new int2(0, Math.round(areaSideLength))).occupation, -1, "Bot[0,2] Dead, Area[0,1] Occupation");
-            EqualTest(game.board.cellAreaMap.get(new int2(0, Math.round(areaSideLength * 1.5f) + 1)).occupation, -1, "Bot[0,2] Dead, Area[0,1] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new Integer2(0, Math.round(areaSideLength))).occupation, -1, "Bot[0,2] Dead, Area[0,1] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new Integer2(0, Math.round(areaSideLength * 1.5f) + 1)).occupation, -1, "Bot[0,2] Dead, Area[0,1] Occupation");
 
-            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength), Math.round(areaSideLength))).occupation, 0, "Bot[0,2] Dead, Area1[1,1] Occupation");
-            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength), Math.round(areaSideLength * 1.5f) + 1)).occupation, 0, "Bot[0,2] Dead, Area2[1,1] Occupation");
-            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength * (1f + 2f/3f)) + 1, Math.round(areaSideLength))).occupation, 0, "Bot[0,2] Dead, Area3[1,1] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new Integer2(Math.round(areaSideLength), Math.round(areaSideLength))).occupation, 0, "Bot[0,2] Dead, Area1[1,1] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new Integer2(Math.round(areaSideLength), Math.round(areaSideLength * 1.5f) + 1)).occupation, 0, "Bot[0,2] Dead, Area2[1,1] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new Integer2(Math.round(areaSideLength * (1f + 2f/3f)) + 1, Math.round(areaSideLength))).occupation, 0, "Bot[0,2] Dead, Area3[1,1] Occupation");
 
-            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength * 2), Math.round(areaSideLength))).occupation, 1, "Bot[0,2] Dead, Area1[2,1] Occupation");
-            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength * (2f + 1f/3f) + 1), Math.round(areaSideLength))).occupation, 1, "Bot[0,2] Dead, Area2[2,1] Occupation");
-            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength * 3)- 1, Math.round(areaSideLength))).occupation, 1, "Bot[0,2] Dead, Area3[2,1] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new Integer2(Math.round(areaSideLength * 2), Math.round(areaSideLength))).occupation, 1, "Bot[0,2] Dead, Area1[2,1] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new Integer2(Math.round(areaSideLength * (2f + 1f/3f) + 1), Math.round(areaSideLength))).occupation, 1, "Bot[0,2] Dead, Area2[2,1] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new Integer2(Math.round(areaSideLength * 3)- 1, Math.round(areaSideLength))).occupation, 1, "Bot[0,2] Dead, Area3[2,1] Occupation");
 
-            EqualTest(game.board.cellAreaMap.get(new int2(0, Math.round(areaSideLength * 2))).occupation, -1, "Bot[0,2] Dead, Area1[0,2] Occupation");
-            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength * 2f / 3f) + 1, Math.round(areaSideLength * (2f+2f/3f)) + 1)).occupation, -1, "Bot[0,2] Dead, Area2[0,2] Occupation");
-            EqualTest(game.board.cellAreaMap.get(new int2(0, Math.round(areaSideLength * 2.5f) + 1)).occupation, -1, "Bot[0,2] Dead, Area3[0,2] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new Integer2(0, Math.round(areaSideLength * 2))).occupation, -1, "Bot[0,2] Dead, Area1[0,2] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new Integer2(Math.round(areaSideLength * 2f / 3f) + 1, Math.round(areaSideLength * (2f+2f/3f)) + 1)).occupation, -1, "Bot[0,2] Dead, Area2[0,2] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new Integer2(0, Math.round(areaSideLength * 2.5f) + 1)).occupation, -1, "Bot[0,2] Dead, Area3[0,2] Occupation");
 
-            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength), Math.round(areaSideLength * 2))).occupation, 1, "Bot[0,2] Dead, Area1[1,2] Occupation");
-            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength), Math.round(areaSideLength * 3)- 1)).occupation, -1, "Bot[0,2] Dead, Area2[1,2] Occupation");
-            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength * 2f) - 1, Math.round(areaSideLength * 3f) - 1)).occupation, 1, "Bot[0,2] Dead, Area3[1,2] Occupation");
-            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength * (1f + 2f/3f) + 1), Math.round(areaSideLength * 2))).occupation, 1, "Bot[0,2] Dead, Area4[1,2] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new Integer2(Math.round(areaSideLength), Math.round(areaSideLength * 2))).occupation, 1, "Bot[0,2] Dead, Area1[1,2] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new Integer2(Math.round(areaSideLength), Math.round(areaSideLength * 3)- 1)).occupation, -1, "Bot[0,2] Dead, Area2[1,2] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new Integer2(Math.round(areaSideLength * 2f) - 1, Math.round(areaSideLength * 3f) - 1)).occupation, 1, "Bot[0,2] Dead, Area3[1,2] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new Integer2(Math.round(areaSideLength * (1f + 2f/3f) + 1), Math.round(areaSideLength * 2))).occupation, 1, "Bot[0,2] Dead, Area4[1,2] Occupation");
 
-            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength * 2), Math.round(areaSideLength * 2))).occupation, 1, "Bot[0,2] Dead, Area1[2,2] Occupation");
-            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength * 3)- 1, Math.round(areaSideLength * 3)- 1)).occupation, -1, "Bot[0,2] Dead, Area2[2,2] Occupation");
-            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength * 2.5f), Math.round(areaSideLength * 2))).occupation, 1, "Bot[0,2] Dead, Area3[2,2] Occupation");
-            EqualTest(game.board.cellAreaMap.get(new int2(Math.round(areaSideLength * 2.5f), Math.round(areaSideLength * 3) - 1)).occupation, 1, "Bot[0,2] Dead, Area3[2,2] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new Integer2(Math.round(areaSideLength * 2), Math.round(areaSideLength * 2))).occupation, 1, "Bot[0,2] Dead, Area1[2,2] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new Integer2(Math.round(areaSideLength * 3)- 1, Math.round(areaSideLength * 3)- 1)).occupation, -1, "Bot[0,2] Dead, Area2[2,2] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new Integer2(Math.round(areaSideLength * 2.5f), Math.round(areaSideLength * 2))).occupation, 1, "Bot[0,2] Dead, Area3[2,2] Occupation");
+            EqualTest(game.board.cellAreaMap.get(new Integer2(Math.round(areaSideLength * 2.5f), Math.round(areaSideLength * 3) - 1)).occupation, 1, "Bot[0,2] Dead, Area3[2,2] Occupation");
         }
-        else if(bot.equals(new int2(2,2))){}
+        else if(bot.equals(new Integer2(2,2))){}
     }
 
     private static void SetAreas(int horizontalAreaCount, int verticalAreaCount){
@@ -474,12 +481,12 @@ public class Tester {
                 var area = new Area();
                 area.cells = new HashSet();
                 Board.Instance.areas.add(area);
-                var min = new int2((int) (x * areaWidth), (int) (y * areaHeight));
-                var max = new int2((int) ((x+1) * areaWidth - 1), (int) ((y+1) * areaHeight - 1));
+                var min = new Integer2((int) (x * areaWidth), (int) (y * areaHeight));
+                var max = new Integer2((int) ((x+1) * areaWidth - 1), (int) ((y+1) * areaHeight - 1));
 
                 for(var cy = min.y; cy <= max.y; cy++){
                     for(var cx = min.x; cx <= max.x; cx++){
-                        var pos = new int2(cx, cy);
+                        var pos = new Integer2(cx, cy);
                         area.cells.add(pos);
                         Board.Instance.cellAreaMap.put(pos, area);
                     }
@@ -520,7 +527,7 @@ public class Tester {
                     game.player[i] = new Player(i);
                     game.player[i].playerNumber = i;
                 }
-                game.player[p].bots[b] = new Bot(new int2(Board.BOARD_SIDE_LENGTH/2 - 1, 0), p);
+                game.player[p].bots[b] = new Bot(new Integer2(Board.BOARD_SIDE_LENGTH/2 - 1, 0), p);
 
                 var update = new Update();
                 update.bot = b;
@@ -528,19 +535,19 @@ public class Tester {
                 update.x = (int) (Board.BOARD_SIDE_LENGTH/Board.SCALE/2);
                 update.y = 0;
 
-                EqualTest(game.player[p].bots[b].pos, new int2(Board.BOARD_SIDE_LENGTH/2 - 1,0),"PreUpdateBotPos");
-                EqualTest(game.player[p].bots[b].crrArea, Board.Instance.cellAreaMap.get(new int2(0,0)),"PreUpdateArea");
-                EqualTest(Board.Instance.cellAreaMap.get(new int2(0,0)).occupation,-1,"PreUpdateArea0Occupation");
-                EqualTest(Board.Instance.cellAreaMap.get(new int2(Board.BOARD_SIDE_LENGTH - 1,0)).occupation, -1,"PreUpdateArea1Occupation");
+                EqualTest(game.player[p].bots[b].pos, new Integer2(Board.BOARD_SIDE_LENGTH/2 - 1,0),"PreUpdateBotPos");
+                EqualTest(game.player[p].bots[b].crrArea, Board.Instance.cellAreaMap.get(new Integer2(0,0)),"PreUpdateArea");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2(0,0)).occupation,-1,"PreUpdateArea0Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2(Board.BOARD_SIDE_LENGTH - 1,0)).occupation, -1,"PreUpdateArea1Occupation");
 
                 var startTime = System.nanoTime();
                 game.Update(update);
                 long endTime = System.nanoTime();
                 long executionTime = endTime - startTime;
 
-                EqualTest(game.player[p].bots[b].pos, new int2(update.x, update.y),"PostUpdateBotPos");
-                EqualTest(game.player[p].bots[b].crrArea, Board.Instance.cellAreaMap.get(new int2(Board.BOARD_SIDE_LENGTH - 1,0)),"PostUpdateArea");
-                EqualTest(Board.Instance.cellAreaMap.get(new int2(Board.BOARD_SIDE_LENGTH - 1,0)).occupation, p,"PostUpdateArea1Occupation");
+                EqualTest(game.player[p].bots[b].pos, new Integer2(update.x, update.y),"PostUpdateBotPos");
+                EqualTest(game.player[p].bots[b].crrArea, Board.Instance.cellAreaMap.get(new Integer2(Board.BOARD_SIDE_LENGTH - 1,0)),"PostUpdateArea");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2(Board.BOARD_SIDE_LENGTH - 1,0)).occupation, p,"PostUpdateArea1Occupation");
 
                 SmallerEqualTest(executionTime/1000000000f, 0.003f, "UpdateDurationTest");
             }
@@ -557,9 +564,9 @@ public class Tester {
         //INIT
 
         Game.Instance.player[0] = new Player(0);
-        Game.Instance.player[0].bots[0] = new Bot(new int2(0, (int) (areaSideLength * .5f)), 0);
-        Game.Instance.player[0].bots[1] = new Bot(new int2(0,(int) (areaSideLength * 1.5f)), 0);
-        Game.Instance.player[0].bots[2] = new Bot(new int2(0,(int) (areaSideLength * 2.5f)), 0);
+        Game.Instance.player[0].bots[0] = new Bot(new Integer2(0, (int) (areaSideLength * .5f)), 0);
+        Game.Instance.player[0].bots[1] = new Bot(new Integer2(0,(int) (areaSideLength * 1.5f)), 0);
+        Game.Instance.player[0].bots[2] = new Bot(new Integer2(0,(int) (areaSideLength * 2.5f)), 0);
         Board.Instance.areas.add(Game.Instance.player[0].walls);
         Game.Instance.player[0].walls.cells.add(Game.Instance.player[0].bots[0].pos);
         Game.Instance.player[0].walls.cells.add(Game.Instance.player[0].bots[1].pos);
@@ -568,9 +575,9 @@ public class Tester {
         Board.Instance.RemapCellToArea(Game.Instance.player[0].bots[1].pos, Game.Instance.player[0].walls);
         Board.Instance.RemapCellToArea(Game.Instance.player[0].bots[2].pos, Game.Instance.player[0].walls);
         Game.Instance.player[1] = new Player(1);
-        Game.Instance.player[1].bots[0] = new Bot(new int2((int) (areaSideLength/3f),0), 1);
-        Game.Instance.player[1].bots[1] = new Bot(new int2((int) (areaSideLength + (int) (areaSideLength * 2f / 3f)),0), 1);
-        Game.Instance.player[1].bots[2] = new Bot(new int2((int) (2 * areaSideLength + (int) (areaSideLength / 3f)),0), 1);
+        Game.Instance.player[1].bots[0] = new Bot(new Integer2((int) (areaSideLength/3f),0), 1);
+        Game.Instance.player[1].bots[1] = new Bot(new Integer2((int) (areaSideLength + (int) (areaSideLength * 2f / 3f)),0), 1);
+        Game.Instance.player[1].bots[2] = new Bot(new Integer2((int) (2 * areaSideLength + (int) (areaSideLength / 3f)),0), 1);
         Board.Instance.areas.add(Game.Instance.player[1].walls);
         Game.Instance.player[1].walls.cells.add(Game.Instance.player[1].bots[0].pos);
         Game.Instance.player[1].walls.cells.add(Game.Instance.player[1].bots[1].pos);
@@ -580,9 +587,9 @@ public class Tester {
         Board.Instance.RemapCellToArea(Game.Instance.player[1].bots[2].pos, Game.Instance.player[1].walls);
 
         Game.Instance.player[2] = new Player(2);
-        Game.Instance.player[2].bots[0] = new Bot(new int2((int) (areaSideLength * 2f / 3f), Board.BOARD_SIDE_LENGTH - 1), 2);
-        Game.Instance.player[2].bots[1] = new Bot(new int2((int) (areaSideLength + (int) (areaSideLength / 3f)), Board.BOARD_SIDE_LENGTH - 1), 2);
-        Game.Instance.player[2].bots[2] = new Bot(new int2(Board.BOARD_SIDE_LENGTH - (int) (areaSideLength / 3f), Board.BOARD_SIDE_LENGTH - 1), 2);
+        Game.Instance.player[2].bots[0] = new Bot(new Integer2((int) (areaSideLength * 2f / 3f), Board.BOARD_SIDE_LENGTH - 1), 2);
+        Game.Instance.player[2].bots[1] = new Bot(new Integer2((int) (areaSideLength + (int) (areaSideLength / 3f)), Board.BOARD_SIDE_LENGTH - 1), 2);
+        Game.Instance.player[2].bots[2] = new Bot(new Integer2(Board.BOARD_SIDE_LENGTH - (int) (areaSideLength / 3f), Board.BOARD_SIDE_LENGTH - 1), 2);
         Board.Instance.areas.add(Game.Instance.player[2].walls);
         Game.Instance.player[2].walls.cells.add(Game.Instance.player[2].bots[0].pos);
         Game.Instance.player[2].walls.cells.add(Game.Instance.player[2].bots[1].pos);
@@ -594,7 +601,7 @@ public class Tester {
         //Static Walls
         var staticWalls = new Area();
         for(var x = (int) (areaSideLength/2f); x < areaSideLength * 1.5f; x++){
-            staticWalls.cells.add(new int2(x, (int) (areaSideLength * (2f+2f/3f))));
+            staticWalls.cells.add(new Integer2(x, (int) (areaSideLength * (2f+2f/3f))));
         }
 
         SetStaticWalls(staticWalls);
@@ -665,51 +672,51 @@ public class Tester {
 
                 EqualTest(Board.Instance.GetAreaCount(), 11, "Bot[2,0] AreaCountCheck");
 
-                EqualTest(Board.Instance.cellAreaMap.get(new int2(0, 0)).occupation, -1, "Bot[2,0] Dead, Area[0,0] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2(0, 0)).occupation, -1, "Bot[2,0] Dead, Area[0,0] Occupation");
                 
-                EqualTest(Board.Instance.cellAreaMap.get(new int2((int) areaSideLength, 0)).occupation, -1, "Bot[2,0] Dead, Area[1,0] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2((int) areaSideLength, 0)).occupation, -1, "Bot[2,0] Dead, Area[1,0] Occupation");
                 
-                EqualTest(Board.Instance.cellAreaMap.get(new int2((int) (areaSideLength * 2), 0)).occupation, -1, "Bot[2,0] Dead, Area[2,0] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2((int) (areaSideLength * 2), 0)).occupation, -1, "Bot[2,0] Dead, Area[2,0] Occupation");
                 
-                EqualTest(Board.Instance.cellAreaMap.get(new int2(0, (int) areaSideLength)).occupation, -1, "Bot[2,0] Dead, Area[0,1] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2(0, (int) areaSideLength)).occupation, -1, "Bot[2,0] Dead, Area[0,1] Occupation");
                 
-                EqualTest(Board.Instance.cellAreaMap.get(new int2((int) areaSideLength, (int) areaSideLength)).occupation, -1, "Bot[2,0] Dead, Area[1,1] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2((int) areaSideLength, (int) areaSideLength)).occupation, -1, "Bot[2,0] Dead, Area[1,1] Occupation");
                 
-                EqualTest(Board.Instance.cellAreaMap.get(new int2((int) (areaSideLength * 2), (int) areaSideLength)).occupation, -1, "Bot[2,0] Dead, Area[2,1] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2((int) (areaSideLength * 2), (int) areaSideLength)).occupation, -1, "Bot[2,0] Dead, Area[2,1] Occupation");
                 
 
-                EqualTest(Board.Instance.cellAreaMap.get(new int2(0, (int) (areaSideLength * 2))).occupation, -1, "Bot[2,0] Dead, Area1[0,2] Occupation");
-                EqualTest(Board.Instance.cellAreaMap.get(new int2((int) (areaSideLength * 2f / 3f) + 1, (int) (areaSideLength * (2f+2f/3f)) + 1)).occupation, -1, "Bot[2,0] Dead, Area2[0,2] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2(0, (int) (areaSideLength * 2))).occupation, -1, "Bot[2,0] Dead, Area1[0,2] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2((int) (areaSideLength * 2f / 3f) + 1, (int) (areaSideLength * (2f+2f/3f)) + 1)).occupation, -1, "Bot[2,0] Dead, Area2[0,2] Occupation");
                 
-                EqualTest(Board.Instance.cellAreaMap.get(new int2((int) areaSideLength, (int) (areaSideLength * 2))).occupation, -1, "Bot[2,0] Dead, Area1[1,2] Occupation");
-                EqualTest(Board.Instance.cellAreaMap.get(new int2((int) (areaSideLength + (int) (areaSideLength / 3f)), (int) (areaSideLength * (2f+2f/3f)) + 1)).occupation, -1, "Bot[2,0] Dead, Area2[1,2] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2((int) areaSideLength, (int) (areaSideLength * 2))).occupation, -1, "Bot[2,0] Dead, Area1[1,2] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2((int) (areaSideLength + (int) (areaSideLength / 3f)), (int) (areaSideLength * (2f+2f/3f)) + 1)).occupation, -1, "Bot[2,0] Dead, Area2[1,2] Occupation");
 
-                EqualTest(Board.Instance.cellAreaMap.get(new int2((int) (areaSideLength * 2), (int) (areaSideLength * 2))).occupation, -1, "Bot[2,0] Dead, Area[2,2] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2((int) (areaSideLength * 2), (int) (areaSideLength * 2))).occupation, -1, "Bot[2,0] Dead, Area[2,2] Occupation");
             }
             if(botsAlive[7] && (updateP2B1.y * Board.SCALE <= areaSideLength * (2f+2f/3f))){
                 botsAlive[7] = false;
 
                 EqualTest(Board.Instance.GetAreaCount(), 11, "Bot[2,1] AreaCountCheck");
 
-                EqualTest(Board.Instance.cellAreaMap.get(new int2(0, 0)).occupation, -1, "Bot[2,1] Dead, Area[0,0] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2(0, 0)).occupation, -1, "Bot[2,1] Dead, Area[0,0] Occupation");
                 
-                EqualTest(Board.Instance.cellAreaMap.get(new int2((int) areaSideLength, 0)).occupation, -1, "Bot[2,1] Dead, Area[1,0] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2((int) areaSideLength, 0)).occupation, -1, "Bot[2,1] Dead, Area[1,0] Occupation");
                 
-                EqualTest(Board.Instance.cellAreaMap.get(new int2((int) (areaSideLength * 2), 0)).occupation, -1, "Bot[2,1] Dead, Area[2,0] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2((int) (areaSideLength * 2), 0)).occupation, -1, "Bot[2,1] Dead, Area[2,0] Occupation");
                 
-                EqualTest(Board.Instance.cellAreaMap.get(new int2(0, (int) areaSideLength)).occupation, -1, "Bot[2,1] Dead, Area[0,1] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2(0, (int) areaSideLength)).occupation, -1, "Bot[2,1] Dead, Area[0,1] Occupation");
                 
-                EqualTest(Board.Instance.cellAreaMap.get(new int2((int) areaSideLength, (int) areaSideLength)).occupation, -1, "Bot[2,1] Dead, Area[1,1] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2((int) areaSideLength, (int) areaSideLength)).occupation, -1, "Bot[2,1] Dead, Area[1,1] Occupation");
                 
-                EqualTest(Board.Instance.cellAreaMap.get(new int2((int) (areaSideLength * 2), (int) areaSideLength)).occupation, -1, "Bot[2,1] Dead, Area[2,1] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2((int) (areaSideLength * 2), (int) areaSideLength)).occupation, -1, "Bot[2,1] Dead, Area[2,1] Occupation");
 
-                EqualTest(Board.Instance.cellAreaMap.get(new int2(0, (int) (areaSideLength * 2))).occupation, -1, "Bot[2,1] Dead, Area1[0,2] Occupation");
-                EqualTest(Board.Instance.cellAreaMap.get(new int2((int) (areaSideLength * 2f / 3f) + 1, (int) (areaSideLength * (2f+2f/3f)) + 1)).occupation, -1, "Bot[2,1] Dead, Area2[0,2] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2(0, (int) (areaSideLength * 2))).occupation, -1, "Bot[2,1] Dead, Area1[0,2] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2((int) (areaSideLength * 2f / 3f) + 1, (int) (areaSideLength * (2f+2f/3f)) + 1)).occupation, -1, "Bot[2,1] Dead, Area2[0,2] Occupation");
 
-                EqualTest(Board.Instance.cellAreaMap.get(new int2((int) areaSideLength, (int) (areaSideLength * 2))).occupation, -1, "Bot[2,1] Dead, Area1[1,2] Occupation");
-                EqualTest(Board.Instance.cellAreaMap.get(new int2((int) (areaSideLength + (int) (areaSideLength / 3f)), (int) (areaSideLength * (2f+2f/3f)) + 1)).occupation, -1, "Bot[2,1] Dead, Area2[1,2] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2((int) areaSideLength, (int) (areaSideLength * 2))).occupation, -1, "Bot[2,1] Dead, Area1[1,2] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2((int) (areaSideLength + (int) (areaSideLength / 3f)), (int) (areaSideLength * (2f+2f/3f)) + 1)).occupation, -1, "Bot[2,1] Dead, Area2[1,2] Occupation");
 
-                EqualTest(Board.Instance.cellAreaMap.get(new int2((int) (areaSideLength * 2), (int) (areaSideLength * 2))).occupation, -1, "Bot[2,1] Dead, Area[2,2] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2((int) (areaSideLength * 2), (int) (areaSideLength * 2))).occupation, -1, "Bot[2,1] Dead, Area[2,2] Occupation");
             }
 
             if(botsAlive[3] && (updateP1B0.y * Board.SCALE >= areaSideLength * 0.5f)){
@@ -717,26 +724,26 @@ public class Tester {
                 
                 EqualTest(Board.Instance.GetAreaCount(), 12, "Bot[1,0] AreaCountCheck");
 
-                EqualTest(Board.Instance.cellAreaMap.get(new int2(0, 0)).occupation, -1, "Bot[1,0] Dead, Area1[0,0] Occupation");
-                EqualTest(Board.Instance.cellAreaMap.get(new int2(0, (int) (areaSideLength * 0.5f + 1))).occupation, -1, "Bot[1,0] Dead, Area2[0,0] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2(0, 0)).occupation, -1, "Bot[1,0] Dead, Area1[0,0] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2(0, (int) (areaSideLength * 0.5f + 1))).occupation, -1, "Bot[1,0] Dead, Area2[0,0] Occupation");
                 
-                EqualTest(Board.Instance.cellAreaMap.get(new int2((int) areaSideLength, 0)).occupation, -1, "Bot[1,0] Dead, Area[0,1] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2((int) areaSideLength, 0)).occupation, -1, "Bot[1,0] Dead, Area[0,1] Occupation");
                 
-                EqualTest(Board.Instance.cellAreaMap.get(new int2((int) (areaSideLength * 2), 0)).occupation, -1, "Bot[1,0] Dead, Area[0,2] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2((int) (areaSideLength * 2), 0)).occupation, -1, "Bot[1,0] Dead, Area[0,2] Occupation");
                 
-                EqualTest(Board.Instance.cellAreaMap.get(new int2(0, (int) areaSideLength)).occupation, -1, "Bot[1,0] Dead, Area[1,0] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2(0, (int) areaSideLength)).occupation, -1, "Bot[1,0] Dead, Area[1,0] Occupation");
                 
-                EqualTest(Board.Instance.cellAreaMap.get(new int2((int) areaSideLength, (int) areaSideLength)).occupation, -1, "Bot[1,0] Dead, Area[1,1] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2((int) areaSideLength, (int) areaSideLength)).occupation, -1, "Bot[1,0] Dead, Area[1,1] Occupation");
                 
-                EqualTest(Board.Instance.cellAreaMap.get(new int2((int) (areaSideLength * 2), (int) areaSideLength)).occupation, -1, "Bot[1,0] Dead, Area[1,2] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2((int) (areaSideLength * 2), (int) areaSideLength)).occupation, -1, "Bot[1,0] Dead, Area[1,2] Occupation");
 
-                EqualTest(Board.Instance.cellAreaMap.get(new int2(0, (int) (areaSideLength * 2))).occupation, -1, "Bot[1,0] Dead, Area1[0,2] Occupation");
-                EqualTest(Board.Instance.cellAreaMap.get(new int2((int) (areaSideLength * 2f / 3f) + 1, (int) (areaSideLength * (2f+2f/3f)) + 1)).occupation, -1, "Bot[1,0] Dead, Area2[0,2] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2(0, (int) (areaSideLength * 2))).occupation, -1, "Bot[1,0] Dead, Area1[0,2] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2((int) (areaSideLength * 2f / 3f) + 1, (int) (areaSideLength * (2f+2f/3f)) + 1)).occupation, -1, "Bot[1,0] Dead, Area2[0,2] Occupation");
 
-                EqualTest(Board.Instance.cellAreaMap.get(new int2((int) areaSideLength, (int) (areaSideLength * 2))).occupation, -1, "Bot[1,0] Dead, Area1[1,2] Occupation");
-                EqualTest(Board.Instance.cellAreaMap.get(new int2((int) (areaSideLength + (int) (areaSideLength / 3f)), (int) (areaSideLength * (2f+2f/3f)) + 1)).occupation, -1, "Bot[1,0] Dead, Area2[1,2] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2((int) areaSideLength, (int) (areaSideLength * 2))).occupation, -1, "Bot[1,0] Dead, Area1[1,2] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2((int) (areaSideLength + (int) (areaSideLength / 3f)), (int) (areaSideLength * (2f+2f/3f)) + 1)).occupation, -1, "Bot[1,0] Dead, Area2[1,2] Occupation");
 
-                EqualTest(Board.Instance.cellAreaMap.get(new int2((int) (areaSideLength * 2), (int) (areaSideLength * 2))).occupation, -1, "Bot[1,0] Dead, Area[2,2] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2((int) (areaSideLength * 2), (int) (areaSideLength * 2))).occupation, -1, "Bot[1,0] Dead, Area[2,2] Occupation");
             }
 
             if(botsAlive[0] && (updateP0B0.x * Board.SCALE >= areaSideLength + (int) (areaSideLength * 2f / 3f))){
@@ -744,67 +751,67 @@ public class Tester {
 
                 EqualTest(Board.Instance.GetAreaCount(), 18, "Bot[0,0] AreaCountCheck");
 
-                EqualTest(Board.Instance.cellAreaMap.get(new int2(0, 0)).occupation, -1, "Bot[0,0] Dead, Area1[0,0] Occupation");
-                EqualTest(Board.Instance.cellAreaMap.get(new int2(0, (int) (areaSideLength * 0.5f + 1))).occupation, -1, "Bot[0,0] Dead, Area2[0,0] Occupation");
-                EqualTest(Board.Instance.cellAreaMap.get(new int2((int) (areaSideLength/3f), 0)).occupation, -1, "Bot[0,0] Dead, Area3[0,0] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2(0, 0)).occupation, -1, "Bot[0,0] Dead, Area1[0,0] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2(0, (int) (areaSideLength * 0.5f + 1))).occupation, -1, "Bot[0,0] Dead, Area2[0,0] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2((int) (areaSideLength/3f), 0)).occupation, -1, "Bot[0,0] Dead, Area3[0,0] Occupation");
 
-                EqualTest(Board.Instance.cellAreaMap.get(new int2((int) areaSideLength, 0)).occupation, 0, "Bot[0,0] Dead, Area1[1,0] Occupation");
-                EqualTest(Board.Instance.cellAreaMap.get(new int2((int) areaSideLength, (int) (areaSideLength * 0.5f) + 1)).occupation, 0, "Bot[0,0] Dead, Area2[1,0] Occupation");
-                EqualTest(Board.Instance.cellAreaMap.get(new int2((int) (areaSideLength * (1f + 2f/3f)) + 1, 0)).occupation, -1, "Bot[0,0] Dead, Area3[1,0] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2((int) areaSideLength, 0)).occupation, 0, "Bot[0,0] Dead, Area1[1,0] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2((int) areaSideLength, (int) (areaSideLength * 0.5f) + 1)).occupation, 0, "Bot[0,0] Dead, Area2[1,0] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2((int) (areaSideLength * (1f + 2f/3f)) + 1, 0)).occupation, -1, "Bot[0,0] Dead, Area3[1,0] Occupation");
                 
-                EqualTest(Board.Instance.cellAreaMap.get(new int2((int) (areaSideLength * 2), 0)).occupation, -1, "Bot[0,0] Dead, Area1[2,0] Occupation");
-                EqualTest(Board.Instance.cellAreaMap.get(new int2((int) (areaSideLength * (2f + 1f/3f)) + 1,  0)).occupation, -1, "Bot[0,0] Dead, Area2[2,0] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2((int) (areaSideLength * 2), 0)).occupation, -1, "Bot[0,0] Dead, Area1[2,0] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2((int) (areaSideLength * (2f + 1f/3f)) + 1,  0)).occupation, -1, "Bot[0,0] Dead, Area2[2,0] Occupation");
                 
-                EqualTest(Board.Instance.cellAreaMap.get(new int2(0, (int) areaSideLength)).occupation, -1, "Bot[0,0] Dead, Area[0,1] Occupation");
-                EqualTest(Board.Instance.cellAreaMap.get(new int2(0, (int) (areaSideLength * 1.5f) + 1)).occupation, -1, "Bot[0,0] Dead, Area[0,1] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2(0, (int) areaSideLength)).occupation, -1, "Bot[0,0] Dead, Area[0,1] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2(0, (int) (areaSideLength * 1.5f) + 1)).occupation, -1, "Bot[0,0] Dead, Area[0,1] Occupation");
                 
-                EqualTest(Board.Instance.cellAreaMap.get(new int2((int) areaSideLength, (int) areaSideLength)).occupation, 0, "Bot[0,0] Dead, Area[1,1] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2((int) areaSideLength, (int) areaSideLength)).occupation, 0, "Bot[0,0] Dead, Area[1,1] Occupation");
                 
-                EqualTest(Board.Instance.cellAreaMap.get(new int2((int) (areaSideLength * 2), (int) areaSideLength)).occupation, 1, "Bot[0,0] Dead, Area[1,2] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2((int) (areaSideLength * 2), (int) areaSideLength)).occupation, 1, "Bot[0,0] Dead, Area[1,2] Occupation");
 
-                EqualTest(Board.Instance.cellAreaMap.get(new int2(0, (int) (areaSideLength * 2))).occupation, -1, "Bot[0,0] Dead, Area1[0,2] Occupation");
-                EqualTest(Board.Instance.cellAreaMap.get(new int2((int) (areaSideLength * 2f / 3f) + 1, (int) (areaSideLength * (2f+2f/3f)) + 1)).occupation, -1, "Bot[0,0] Dead, Area2[0,2] Occupation");
-                EqualTest(Board.Instance.cellAreaMap.get(new int2(0, (int) (areaSideLength * 2.5f) + 1)).occupation, -1, "Bot[0,0] Dead, Area3[0,2] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2(0, (int) (areaSideLength * 2))).occupation, -1, "Bot[0,0] Dead, Area1[0,2] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2((int) (areaSideLength * 2f / 3f) + 1, (int) (areaSideLength * (2f+2f/3f)) + 1)).occupation, -1, "Bot[0,0] Dead, Area2[0,2] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2(0, (int) (areaSideLength * 2.5f) + 1)).occupation, -1, "Bot[0,0] Dead, Area3[0,2] Occupation");
 
-                EqualTest(Board.Instance.cellAreaMap.get(new int2((int) areaSideLength, (int) (areaSideLength * 2))).occupation, 0, "Bot[0,0] Dead, Area1[1,2] Occupation");
-                EqualTest(Board.Instance.cellAreaMap.get(new int2((int) (areaSideLength + (int) (areaSideLength / 3f)), (int) (areaSideLength * (2f+2f/3f)) + 1)).occupation, -1, "Bot[0,0] Dead, Area2[1,2] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2((int) areaSideLength, (int) (areaSideLength * 2))).occupation, 0, "Bot[0,0] Dead, Area1[1,2] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2((int) (areaSideLength + (int) (areaSideLength / 3f)), (int) (areaSideLength * (2f+2f/3f)) + 1)).occupation, -1, "Bot[0,0] Dead, Area2[1,2] Occupation");
 
-                EqualTest(Board.Instance.cellAreaMap.get(new int2((int) (areaSideLength * 2), (int) (areaSideLength * 2))).occupation, -1, "Bot[0,0] Dead, Area1[2,2] Occupation");
-                EqualTest(Board.Instance.cellAreaMap.get(new int2((int) (areaSideLength * (2f + 2f/3f)) + 1, (int) (areaSideLength * 2))).occupation, -1, "Bot[0,0] Dead, Area2[2,2] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2((int) (areaSideLength * 2), (int) (areaSideLength * 2))).occupation, -1, "Bot[0,0] Dead, Area1[2,2] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2((int) (areaSideLength * (2f + 2f/3f)) + 1, (int) (areaSideLength * 2))).occupation, -1, "Bot[0,0] Dead, Area2[2,2] Occupation");
             }
             if(botsAlive[1] && (updateP0B1.x * Board.SCALE >= areaSideLength + (int) (areaSideLength * 2f / 3f))){
                 botsAlive[1] = false;
 
                 EqualTest(Board.Instance.GetAreaCount(), 19, "Bot[0,1] AreaCountCheck");
 
-                EqualTest(Board.Instance.cellAreaMap.get(new int2(0, 0)).occupation, -1, "Bot[0,1] Dead, Area1[0,0] Occupation");
-                EqualTest(Board.Instance.cellAreaMap.get(new int2(0, (int) (areaSideLength * 0.5f + 1))).occupation, -1, "Bot[0,1] Dead, Area2[0,0] Occupation");
-                EqualTest(Board.Instance.cellAreaMap.get(new int2((int) (areaSideLength/3f), 0)).occupation, -1, "Bot[0,1] Dead, Area3[0,0] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2(0, 0)).occupation, -1, "Bot[0,1] Dead, Area1[0,0] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2(0, (int) (areaSideLength * 0.5f + 1))).occupation, -1, "Bot[0,1] Dead, Area2[0,0] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2((int) (areaSideLength/3f), 0)).occupation, -1, "Bot[0,1] Dead, Area3[0,0] Occupation");
 
-                EqualTest(Board.Instance.cellAreaMap.get(new int2((int) areaSideLength, 0)).occupation, 0, "Bot[0,1] Dead, Area1[1,0] Occupation");
-                EqualTest(Board.Instance.cellAreaMap.get(new int2((int) areaSideLength, (int) (areaSideLength * 0.5f) + 1)).occupation, 0, "Bot[0,1] Dead, Area2[1,0] Occupation");
-                EqualTest(Board.Instance.cellAreaMap.get(new int2((int) (areaSideLength * (1f + 2f/3f)) + 1, 0)).occupation, -1, "Bot[0,1] Dead, Area3[1,0] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2((int) areaSideLength, 0)).occupation, 0, "Bot[0,1] Dead, Area1[1,0] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2((int) areaSideLength, (int) (areaSideLength * 0.5f) + 1)).occupation, 0, "Bot[0,1] Dead, Area2[1,0] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2((int) (areaSideLength * (1f + 2f/3f)) + 1, 0)).occupation, -1, "Bot[0,1] Dead, Area3[1,0] Occupation");
 
-                EqualTest(Board.Instance.cellAreaMap.get(new int2((int) (areaSideLength * 2), 0)).occupation, -1, "Bot[0,1] Dead, Area1[2,0] Occupation");
-                EqualTest(Board.Instance.cellAreaMap.get(new int2((int) (areaSideLength * (2f + 1f/3f)) + 1,  0)).occupation, -1, "Bot[0,1] Dead, Area2[2,0] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2((int) (areaSideLength * 2), 0)).occupation, -1, "Bot[0,1] Dead, Area1[2,0] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2((int) (areaSideLength * (2f + 1f/3f)) + 1,  0)).occupation, -1, "Bot[0,1] Dead, Area2[2,0] Occupation");
 
-                EqualTest(Board.Instance.cellAreaMap.get(new int2(0, (int) areaSideLength)).occupation, -1, "Bot[0,1] Dead, Area[0,1] Occupation");
-                EqualTest(Board.Instance.cellAreaMap.get(new int2(0, (int) (areaSideLength * 1.5f) + 1)).occupation, -1, "Bot[0,1] Dead, Area[0,1] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2(0, (int) areaSideLength)).occupation, -1, "Bot[0,1] Dead, Area[0,1] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2(0, (int) (areaSideLength * 1.5f) + 1)).occupation, -1, "Bot[0,1] Dead, Area[0,1] Occupation");
 
-                EqualTest(Board.Instance.cellAreaMap.get(new int2((int) areaSideLength, (int) areaSideLength)).occupation, 0, "Bot[0,1] Dead, Area1[1,1] Occupation");
-                EqualTest(Board.Instance.cellAreaMap.get(new int2((int) areaSideLength, (int) (areaSideLength * 1.5f) + 1)).occupation, 0, "Bot[0,1] Dead, Area2[1,1] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2((int) areaSideLength, (int) areaSideLength)).occupation, 0, "Bot[0,1] Dead, Area1[1,1] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2((int) areaSideLength, (int) (areaSideLength * 1.5f) + 1)).occupation, 0, "Bot[0,1] Dead, Area2[1,1] Occupation");
 
-                EqualTest(Board.Instance.cellAreaMap.get(new int2((int) (areaSideLength * 2), (int) areaSideLength)).occupation, 1, "Bot[0,1] Dead, Area[1,2] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2((int) (areaSideLength * 2), (int) areaSideLength)).occupation, 1, "Bot[0,1] Dead, Area[1,2] Occupation");
 
-                EqualTest(Board.Instance.cellAreaMap.get(new int2(0, (int) (areaSideLength * 2))).occupation, -1, "Bot[0,1] Dead, Area1[0,2] Occupation");
-                EqualTest(Board.Instance.cellAreaMap.get(new int2((int) (areaSideLength * 2f / 3f) + 1, (int) (areaSideLength * (2f+2f/3f)) + 1)).occupation, -1, "Bot[0,1] Dead, Area2[0,2] Occupation");
-                EqualTest(Board.Instance.cellAreaMap.get(new int2(0, (int) (areaSideLength * 2.5f) + 1)).occupation, -1, "Bot[0,1] Dead, Area3[0,2] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2(0, (int) (areaSideLength * 2))).occupation, -1, "Bot[0,1] Dead, Area1[0,2] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2((int) (areaSideLength * 2f / 3f) + 1, (int) (areaSideLength * (2f+2f/3f)) + 1)).occupation, -1, "Bot[0,1] Dead, Area2[0,2] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2(0, (int) (areaSideLength * 2.5f) + 1)).occupation, -1, "Bot[0,1] Dead, Area3[0,2] Occupation");
 
-                EqualTest(Board.Instance.cellAreaMap.get(new int2((int) areaSideLength, (int) (areaSideLength * 2))).occupation, 0, "Bot[0,1] Dead, Area1[1,2] Occupation");
-                EqualTest(Board.Instance.cellAreaMap.get(new int2((int) (areaSideLength + (int) (areaSideLength / 3f)), (int) (areaSideLength * (2f+2f/3f)) + 1)).occupation, -1, "Bot[0,1] Dead, Area2[1,2] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2((int) areaSideLength, (int) (areaSideLength * 2))).occupation, 0, "Bot[0,1] Dead, Area1[1,2] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2((int) (areaSideLength + (int) (areaSideLength / 3f)), (int) (areaSideLength * (2f+2f/3f)) + 1)).occupation, -1, "Bot[0,1] Dead, Area2[1,2] Occupation");
 
-                EqualTest(Board.Instance.cellAreaMap.get(new int2((int) (areaSideLength * 2), (int) (areaSideLength * 2))).occupation, -1, "Bot[0,1] Dead, Area1[2,2] Occupation");
-                EqualTest(Board.Instance.cellAreaMap.get(new int2((int) (areaSideLength * (2f + 2f/3f)) + 1, (int) (areaSideLength * 2))).occupation, -1, "Bot[0,1] Dead, Area2[2,2] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2((int) (areaSideLength * 2), (int) (areaSideLength * 2))).occupation, -1, "Bot[0,1] Dead, Area1[2,2] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2((int) (areaSideLength * (2f + 2f/3f)) + 1, (int) (areaSideLength * 2))).occupation, -1, "Bot[0,1] Dead, Area2[2,2] Occupation");
             }
 
             if(botsAlive[4] && (updateP1B1.y * Board.SCALE >= (int) (areaSideLength * 2.5f))){
@@ -812,39 +819,39 @@ public class Tester {
 
                 EqualTest(Board.Instance.GetAreaCount(), 25, "Bot[1,1] AreaCountCheck");
 
-                EqualTest(Board.Instance.cellAreaMap.get(new int2(0, 0)).occupation, -1, "Bot[1,1] Dead, Area1[0,0] Occupation");
-                EqualTest(Board.Instance.cellAreaMap.get(new int2(0, (int) (areaSideLength * 0.5f + 1))).occupation, -1, "Bot[1,1] Dead, Area2[0,0] Occupation");
-                EqualTest(Board.Instance.cellAreaMap.get(new int2((int) (areaSideLength/3f), 0)).occupation, -1, "Bot[1,1] Dead, Area3[0,0] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2(0, 0)).occupation, -1, "Bot[1,1] Dead, Area1[0,0] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2(0, (int) (areaSideLength * 0.5f + 1))).occupation, -1, "Bot[1,1] Dead, Area2[0,0] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2((int) (areaSideLength/3f), 0)).occupation, -1, "Bot[1,1] Dead, Area3[0,0] Occupation");
 
-                EqualTest(Board.Instance.cellAreaMap.get(new int2((int) areaSideLength, 0)).occupation, 0, "Bot[1,1] Dead, Area1[1,0] Occupation");
-                EqualTest(Board.Instance.cellAreaMap.get(new int2((int) areaSideLength, (int) (areaSideLength * 0.5f) + 1)).occupation, 0, "Bot[1,1] Dead, Area2[1,0] Occupation");
-                EqualTest(Board.Instance.cellAreaMap.get(new int2((int) (areaSideLength * (1f + 2f/3f)) + 1, 0)).occupation, -1, "Bot[1,1] Dead, Area3[1,0] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2((int) areaSideLength, 0)).occupation, 0, "Bot[1,1] Dead, Area1[1,0] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2((int) areaSideLength, (int) (areaSideLength * 0.5f) + 1)).occupation, 0, "Bot[1,1] Dead, Area2[1,0] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2((int) (areaSideLength * (1f + 2f/3f)) + 1, 0)).occupation, -1, "Bot[1,1] Dead, Area3[1,0] Occupation");
 
-                EqualTest(Board.Instance.cellAreaMap.get(new int2((int) (areaSideLength * 2), 0)).occupation, -1, "Bot[1,1] Dead, Area1[2,0] Occupation");
-                EqualTest(Board.Instance.cellAreaMap.get(new int2((int) (areaSideLength * (2f + 1f/3f)) + 1,  0)).occupation, 2, "Bot[1,1] Dead, Area2[2,0] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2((int) (areaSideLength * 2), 0)).occupation, -1, "Bot[1,1] Dead, Area1[2,0] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2((int) (areaSideLength * (2f + 1f/3f)) + 1,  0)).occupation, 2, "Bot[1,1] Dead, Area2[2,0] Occupation");
 
-                EqualTest(Board.Instance.cellAreaMap.get(new int2(0, (int) areaSideLength)).occupation, -1, "Bot[1,1] Dead, Area[0,1] Occupation");
-                EqualTest(Board.Instance.cellAreaMap.get(new int2(0, (int) (areaSideLength * 1.5f) + 1)).occupation, -1, "Bot[1,1] Dead, Area[0,1] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2(0, (int) areaSideLength)).occupation, -1, "Bot[1,1] Dead, Area[0,1] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2(0, (int) (areaSideLength * 1.5f) + 1)).occupation, -1, "Bot[1,1] Dead, Area[0,1] Occupation");
 
-                EqualTest(Board.Instance.cellAreaMap.get(new int2((int) areaSideLength, (int) areaSideLength)).occupation, 0, "Bot[1,1] Dead, Area1[1,1] Occupation");
-                EqualTest(Board.Instance.cellAreaMap.get(new int2((int) areaSideLength, (int) (areaSideLength * 1.5f) + 1)).occupation, 0, "Bot[1,1] Dead, Area2[1,1] Occupation");
-                EqualTest(Board.Instance.cellAreaMap.get(new int2((int) (areaSideLength * (1f + 2f/3f)) + 1, (int) areaSideLength)).occupation, 0, "Bot[1,1] Dead, Area3[1,1] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2((int) areaSideLength, (int) areaSideLength)).occupation, 0, "Bot[1,1] Dead, Area1[1,1] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2((int) areaSideLength, (int) (areaSideLength * 1.5f) + 1)).occupation, 0, "Bot[1,1] Dead, Area2[1,1] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2((int) (areaSideLength * (1f + 2f/3f)) + 1, (int) areaSideLength)).occupation, 0, "Bot[1,1] Dead, Area3[1,1] Occupation");
 
-                EqualTest(Board.Instance.cellAreaMap.get(new int2((int) (areaSideLength * 2), (int) areaSideLength)).occupation, 1, "Bot[1,1] Dead, Area1[1,2] Occupation");
-                EqualTest(Board.Instance.cellAreaMap.get(new int2((int) (areaSideLength * (2f + 1f/3f) + 1), (int) areaSideLength)).occupation, 1, "Bot[1,1] Dead, Area2[1,2] Occupation");
-                EqualTest(Board.Instance.cellAreaMap.get(new int2((int) (areaSideLength * (2f + 2f/3f) + 1), (int) areaSideLength)).occupation, 1, "Bot[1,1] Dead, Area3[1,2] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2((int) (areaSideLength * 2), (int) areaSideLength)).occupation, 1, "Bot[1,1] Dead, Area1[1,2] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2((int) (areaSideLength * (2f + 1f/3f) + 1), (int) areaSideLength)).occupation, 1, "Bot[1,1] Dead, Area2[1,2] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2((int) (areaSideLength * (2f + 2f/3f) + 1), (int) areaSideLength)).occupation, 1, "Bot[1,1] Dead, Area3[1,2] Occupation");
 
-                EqualTest(Board.Instance.cellAreaMap.get(new int2(0, (int) (areaSideLength * 2))).occupation, -1, "Bot[1,1] Dead, Area1[0,2] Occupation");
-                EqualTest(Board.Instance.cellAreaMap.get(new int2((int) (areaSideLength * 2f / 3f) + 1, (int) (areaSideLength * (2f+2f/3f)) + 1)).occupation, -1, "Bot[1,1] Dead, Area2[0,2] Occupation");
-                EqualTest(Board.Instance.cellAreaMap.get(new int2(0, (int) (areaSideLength * 2.5f) + 1)).occupation, -1, "Bot[1,1] Dead, Area3[0,2] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2(0, (int) (areaSideLength * 2))).occupation, -1, "Bot[1,1] Dead, Area1[0,2] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2((int) (areaSideLength * 2f / 3f) + 1, (int) (areaSideLength * (2f+2f/3f)) + 1)).occupation, -1, "Bot[1,1] Dead, Area2[0,2] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2(0, (int) (areaSideLength * 2.5f) + 1)).occupation, -1, "Bot[1,1] Dead, Area3[0,2] Occupation");
 
-                EqualTest(Board.Instance.cellAreaMap.get(new int2((int) areaSideLength, (int) (areaSideLength * 2))).occupation, 1, "Bot[1,1] Dead, Area1[1,2] Occupation");
-                EqualTest(Board.Instance.cellAreaMap.get(new int2((int) (areaSideLength + (int) (areaSideLength / 3f)), (int) (areaSideLength * (2f+2f/3f)) + 1)).occupation, -1, "Bot[1,1] Dead, Area2[1,2] Occupation");
-                EqualTest(Board.Instance.cellAreaMap.get(new int2((int) areaSideLength, (int) (areaSideLength * 2.5f) + 1)).occupation, 0, "Bot[1,1] Dead, Area3[1,2] Occupation");
-                EqualTest(Board.Instance.cellAreaMap.get(new int2((int) (areaSideLength * (1f + 2f/3f) + 1), (int) (areaSideLength * 2))).occupation, 1, "Bot[1,1] Dead, Area3[1,2] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2((int) areaSideLength, (int) (areaSideLength * 2))).occupation, 1, "Bot[1,1] Dead, Area1[1,2] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2((int) (areaSideLength + (int) (areaSideLength / 3f)), (int) (areaSideLength * (2f+2f/3f)) + 1)).occupation, -1, "Bot[1,1] Dead, Area2[1,2] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2((int) areaSideLength, (int) (areaSideLength * 2.5f) + 1)).occupation, 0, "Bot[1,1] Dead, Area3[1,2] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2((int) (areaSideLength * (1f + 2f/3f) + 1), (int) (areaSideLength * 2))).occupation, 1, "Bot[1,1] Dead, Area3[1,2] Occupation");
 
-                EqualTest(Board.Instance.cellAreaMap.get(new int2((int) (areaSideLength * 2), (int) (areaSideLength * 2))).occupation, 0, "Bot[1,1] Dead, Area1[2,2] Occupation");
-                EqualTest(Board.Instance.cellAreaMap.get(new int2((int) (areaSideLength * (2f + 2f/3f)) + 1, (int) (areaSideLength * 2))).occupation, -1, "Bot[1,1] Dead, Area2[2,2] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2((int) (areaSideLength * 2), (int) (areaSideLength * 2))).occupation, 0, "Bot[1,1] Dead, Area1[2,2] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2((int) (areaSideLength * (2f + 2f/3f)) + 1, (int) (areaSideLength * 2))).occupation, -1, "Bot[1,1] Dead, Area2[2,2] Occupation");
             }
 
             if(botsAlive[5] && (updateP1B2.y * Board.SCALE >= (int) (areaSideLength * 2.5f))){
@@ -852,40 +859,40 @@ public class Tester {
 
                 EqualTest(Board.Instance.GetAreaCount(), 26, "Bot[1,1] AreaCountCheck");
 
-                EqualTest(Board.Instance.cellAreaMap.get(new int2(0, 0)).occupation, -1, "Bot[1,2] Dead, Area1[0,0] Occupation");
-                EqualTest(Board.Instance.cellAreaMap.get(new int2(0, (int) (areaSideLength * 0.5f + 1))).occupation, -1, "Bot[1,2] Dead, Area2[0,0] Occupation");
-                EqualTest(Board.Instance.cellAreaMap.get(new int2((int) (areaSideLength/3f), 0)).occupation, -1, "Bot[1,2] Dead, Area3[0,0] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2(0, 0)).occupation, -1, "Bot[1,2] Dead, Area1[0,0] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2(0, (int) (areaSideLength * 0.5f + 1))).occupation, -1, "Bot[1,2] Dead, Area2[0,0] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2((int) (areaSideLength/3f), 0)).occupation, -1, "Bot[1,2] Dead, Area3[0,0] Occupation");
 
-                EqualTest(Board.Instance.cellAreaMap.get(new int2((int) areaSideLength, 0)).occupation, 0, "Bot[1,2] Dead, Area1[1,0] Occupation");
-                EqualTest(Board.Instance.cellAreaMap.get(new int2((int) areaSideLength, (int) (areaSideLength * 0.5f) + 1)).occupation, 0, "Bot[1,2] Dead, Area2[1,0] Occupation");
-                EqualTest(Board.Instance.cellAreaMap.get(new int2((int) (areaSideLength * (1f + 2f/3f)) + 1, 0)).occupation, -1, "Bot[1,2] Dead, Area3[1,0] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2((int) areaSideLength, 0)).occupation, 0, "Bot[1,2] Dead, Area1[1,0] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2((int) areaSideLength, (int) (areaSideLength * 0.5f) + 1)).occupation, 0, "Bot[1,2] Dead, Area2[1,0] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2((int) (areaSideLength * (1f + 2f/3f)) + 1, 0)).occupation, -1, "Bot[1,2] Dead, Area3[1,0] Occupation");
 
-                EqualTest(Board.Instance.cellAreaMap.get(new int2((int) (areaSideLength * 2), 0)).occupation, -1, "Bot[1,2] Dead, Area1[2,0] Occupation");
-                EqualTest(Board.Instance.cellAreaMap.get(new int2((int) (areaSideLength * (2f + 1f/3f)) + 1,  0)).occupation, 2, "Bot[1,2] Dead, Area2[2,0] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2((int) (areaSideLength * 2), 0)).occupation, -1, "Bot[1,2] Dead, Area1[2,0] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2((int) (areaSideLength * (2f + 1f/3f)) + 1,  0)).occupation, 2, "Bot[1,2] Dead, Area2[2,0] Occupation");
 
-                EqualTest(Board.Instance.cellAreaMap.get(new int2(0, (int) areaSideLength)).occupation, -1, "Bot[1,2] Dead, Area[0,1] Occupation");
-                EqualTest(Board.Instance.cellAreaMap.get(new int2(0, (int) (areaSideLength * 1.5f) + 1)).occupation, -1, "Bot[1,2] Dead, Area[0,1] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2(0, (int) areaSideLength)).occupation, -1, "Bot[1,2] Dead, Area[0,1] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2(0, (int) (areaSideLength * 1.5f) + 1)).occupation, -1, "Bot[1,2] Dead, Area[0,1] Occupation");
 
-                EqualTest(Board.Instance.cellAreaMap.get(new int2((int) areaSideLength, (int) areaSideLength)).occupation, 0, "Bot[1,2] Dead, Area1[1,1] Occupation");
-                EqualTest(Board.Instance.cellAreaMap.get(new int2((int) areaSideLength, (int) (areaSideLength * 1.5f) + 1)).occupation, 0, "Bot[1,2] Dead, Area2[1,1] Occupation");
-                EqualTest(Board.Instance.cellAreaMap.get(new int2((int) (areaSideLength * (1f + 2f/3f)) + 1, (int) areaSideLength)).occupation, 0, "Bot[1,2] Dead, Area3[1,1] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2((int) areaSideLength, (int) areaSideLength)).occupation, 0, "Bot[1,2] Dead, Area1[1,1] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2((int) areaSideLength, (int) (areaSideLength * 1.5f) + 1)).occupation, 0, "Bot[1,2] Dead, Area2[1,1] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2((int) (areaSideLength * (1f + 2f/3f)) + 1, (int) areaSideLength)).occupation, 0, "Bot[1,2] Dead, Area3[1,1] Occupation");
 
-                EqualTest(Board.Instance.cellAreaMap.get(new int2((int) (areaSideLength * 2), (int) areaSideLength)).occupation, 1, "Bot[1,2] Dead, Area1[1,2] Occupation");
-                EqualTest(Board.Instance.cellAreaMap.get(new int2((int) (areaSideLength * (2f + 1f/3f) + 1), (int) areaSideLength)).occupation, 1, "Bot[1,2] Dead, Area2[1,2] Occupation");
-                EqualTest(Board.Instance.cellAreaMap.get(new int2((int) (areaSideLength * (2f + 2f/3f) + 1), (int) areaSideLength)).occupation, 1, "Bot[1,2] Dead, Area3[1,2] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2((int) (areaSideLength * 2), (int) areaSideLength)).occupation, 1, "Bot[1,2] Dead, Area1[1,2] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2((int) (areaSideLength * (2f + 1f/3f) + 1), (int) areaSideLength)).occupation, 1, "Bot[1,2] Dead, Area2[1,2] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2((int) (areaSideLength * (2f + 2f/3f) + 1), (int) areaSideLength)).occupation, 1, "Bot[1,2] Dead, Area3[1,2] Occupation");
 
-                EqualTest(Board.Instance.cellAreaMap.get(new int2(0, (int) (areaSideLength * 2))).occupation, -1, "Bot[1,2] Dead, Area1[0,2] Occupation");
-                EqualTest(Board.Instance.cellAreaMap.get(new int2((int) (areaSideLength * 2f / 3f) + 1, (int) (areaSideLength * (2f+2f/3f)) + 1)).occupation, -1, "Bot[1,2] Dead, Area2[0,2] Occupation");
-                EqualTest(Board.Instance.cellAreaMap.get(new int2(0, (int) (areaSideLength * 2.5f) + 1)).occupation, -1, "Bot[1,2] Dead, Area3[0,2] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2(0, (int) (areaSideLength * 2))).occupation, -1, "Bot[1,2] Dead, Area1[0,2] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2((int) (areaSideLength * 2f / 3f) + 1, (int) (areaSideLength * (2f+2f/3f)) + 1)).occupation, -1, "Bot[1,2] Dead, Area2[0,2] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2(0, (int) (areaSideLength * 2.5f) + 1)).occupation, -1, "Bot[1,2] Dead, Area3[0,2] Occupation");
 
-                EqualTest(Board.Instance.cellAreaMap.get(new int2((int) areaSideLength, (int) (areaSideLength * 2))).occupation, 1, "Bot[1,2] Dead, Area1[1,2] Occupation");
-                EqualTest(Board.Instance.cellAreaMap.get(new int2((int) (areaSideLength + (int) (areaSideLength / 3f)), (int) (areaSideLength * (2f+2f/3f)) + 1)).occupation, -1, "Bot[1,2] Dead, Area2[1,2] Occupation");
-                EqualTest(Board.Instance.cellAreaMap.get(new int2((int) areaSideLength, (int) (areaSideLength * 2.5f) + 1)).occupation, 0, "Bot[1,2] Dead, Area3[1,2] Occupation");
-                EqualTest(Board.Instance.cellAreaMap.get(new int2((int) (areaSideLength * (1f + 2f/3f) + 1), (int) (areaSideLength * 2))).occupation, 1, "Bot[1,2] Dead, Area3[1,2] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2((int) areaSideLength, (int) (areaSideLength * 2))).occupation, 1, "Bot[1,2] Dead, Area1[1,2] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2((int) (areaSideLength + (int) (areaSideLength / 3f)), (int) (areaSideLength * (2f+2f/3f)) + 1)).occupation, -1, "Bot[1,2] Dead, Area2[1,2] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2((int) areaSideLength, (int) (areaSideLength * 2.5f) + 1)).occupation, 0, "Bot[1,2] Dead, Area3[1,2] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2((int) (areaSideLength * (1f + 2f/3f) + 1), (int) (areaSideLength * 2))).occupation, 1, "Bot[1,2] Dead, Area3[1,2] Occupation");
 
-                EqualTest(Board.Instance.cellAreaMap.get(new int2((int) (areaSideLength * 2), (int) (areaSideLength * 2))).occupation, 0, "Bot[1,2] Dead, Area1[2,2] Occupation");
-                EqualTest(Board.Instance.cellAreaMap.get(new int2((int) (areaSideLength * (2f + 2f/3f)) + 1, (int) (areaSideLength * 2))).occupation, -1, "Bot[1,2] Dead, Area2[2,2] Occupation");
-                EqualTest(Board.Instance.cellAreaMap.get(new int2((int) (areaSideLength * 2), (int) (areaSideLength * 2.5f) + 1)).occupation, 0, "Bot[1,2] Dead, Area3[2,2] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2((int) (areaSideLength * 2), (int) (areaSideLength * 2))).occupation, 0, "Bot[1,2] Dead, Area1[2,2] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2((int) (areaSideLength * (2f + 2f/3f)) + 1, (int) (areaSideLength * 2))).occupation, -1, "Bot[1,2] Dead, Area2[2,2] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2((int) (areaSideLength * 2), (int) (areaSideLength * 2.5f) + 1)).occupation, 0, "Bot[1,2] Dead, Area3[2,2] Occupation");
             }
 
             if(botsAlive[2] && (updateP0B2.x * Board.SCALE >= (int) (areaSideLength * (2f + 2f/3f)))){
@@ -893,41 +900,41 @@ public class Tester {
 
                 EqualTest(Board.Instance.GetAreaCount(), 27, "Bot[1,1] AreaCountCheck");
 
-                EqualTest(Board.Instance.cellAreaMap.get(new int2(0, 0)).occupation, -1, "Bot[0,2] Dead, Area1[0,0] Occupation");
-                EqualTest(Board.Instance.cellAreaMap.get(new int2(0, (int) (areaSideLength * 0.5f + 1))).occupation, -1, "Bot[0,2] Dead, Area2[0,0] Occupation");
-                EqualTest(Board.Instance.cellAreaMap.get(new int2((int) (areaSideLength/3f), 0)).occupation, -1, "Bot[0,2] Dead, Area3[0,0] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2(0, 0)).occupation, -1, "Bot[0,2] Dead, Area1[0,0] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2(0, (int) (areaSideLength * 0.5f + 1))).occupation, -1, "Bot[0,2] Dead, Area2[0,0] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2((int) (areaSideLength/3f), 0)).occupation, -1, "Bot[0,2] Dead, Area3[0,0] Occupation");
 
-                EqualTest(Board.Instance.cellAreaMap.get(new int2((int) areaSideLength, 0)).occupation, 0, "Bot[0,2] Dead, Area1[1,0] Occupation");
-                EqualTest(Board.Instance.cellAreaMap.get(new int2((int) areaSideLength, (int) (areaSideLength * 0.5f) + 1)).occupation, 0, "Bot[0,2] Dead, Area2[1,0] Occupation");
-                EqualTest(Board.Instance.cellAreaMap.get(new int2((int) (areaSideLength * (1f + 2f/3f)) + 1, 0)).occupation, -1, "Bot[0,2] Dead, Area3[1,0] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2((int) areaSideLength, 0)).occupation, 0, "Bot[0,2] Dead, Area1[1,0] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2((int) areaSideLength, (int) (areaSideLength * 0.5f) + 1)).occupation, 0, "Bot[0,2] Dead, Area2[1,0] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2((int) (areaSideLength * (1f + 2f/3f)) + 1, 0)).occupation, -1, "Bot[0,2] Dead, Area3[1,0] Occupation");
 
-                EqualTest(Board.Instance.cellAreaMap.get(new int2((int) (areaSideLength * 2), 0)).occupation, -1, "Bot[0,2] Dead, Area1[2,0] Occupation");
-                EqualTest(Board.Instance.cellAreaMap.get(new int2((int) (areaSideLength * (2f + 1f/3f)) + 1,  0)).occupation, 2, "Bot[0,2] Dead, Area2[2,0] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2((int) (areaSideLength * 2), 0)).occupation, -1, "Bot[0,2] Dead, Area1[2,0] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2((int) (areaSideLength * (2f + 1f/3f)) + 1,  0)).occupation, 2, "Bot[0,2] Dead, Area2[2,0] Occupation");
 
-                EqualTest(Board.Instance.cellAreaMap.get(new int2(0, (int) areaSideLength)).occupation, -1, "Bot[0,2] Dead, Area[0,1] Occupation");
-                EqualTest(Board.Instance.cellAreaMap.get(new int2(0, (int) (areaSideLength * 1.5f) + 1)).occupation, -1, "Bot[0,2] Dead, Area[0,1] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2(0, (int) areaSideLength)).occupation, -1, "Bot[0,2] Dead, Area[0,1] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2(0, (int) (areaSideLength * 1.5f) + 1)).occupation, -1, "Bot[0,2] Dead, Area[0,1] Occupation");
 
-                EqualTest(Board.Instance.cellAreaMap.get(new int2((int) areaSideLength, (int) areaSideLength)).occupation, 0, "Bot[0,2] Dead, Area1[1,1] Occupation");
-                EqualTest(Board.Instance.cellAreaMap.get(new int2((int) areaSideLength, (int) (areaSideLength * 1.5f) + 1)).occupation, 0, "Bot[0,2] Dead, Area2[1,1] Occupation");
-                EqualTest(Board.Instance.cellAreaMap.get(new int2((int) (areaSideLength * (1f + 2f/3f)) + 1, (int) areaSideLength)).occupation, 0, "Bot[0,2] Dead, Area3[1,1] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2((int) areaSideLength, (int) areaSideLength)).occupation, 0, "Bot[0,2] Dead, Area1[1,1] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2((int) areaSideLength, (int) (areaSideLength * 1.5f) + 1)).occupation, 0, "Bot[0,2] Dead, Area2[1,1] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2((int) (areaSideLength * (1f + 2f/3f)) + 1, (int) areaSideLength)).occupation, 0, "Bot[0,2] Dead, Area3[1,1] Occupation");
 
-                EqualTest(Board.Instance.cellAreaMap.get(new int2((int) (areaSideLength * 2), (int) areaSideLength)).occupation, 1, "Bot[0,2] Dead, Area1[1,2] Occupation");
-                EqualTest(Board.Instance.cellAreaMap.get(new int2((int) (areaSideLength * (2f + 1f/3f) + 1), (int) areaSideLength)).occupation, 1, "Bot[0,2] Dead, Area2[1,2] Occupation");
-                EqualTest(Board.Instance.cellAreaMap.get(new int2((int) (areaSideLength * (2f + 2f/3f) + 1), (int) areaSideLength)).occupation, 1, "Bot[0,2] Dead, Area3[1,2] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2((int) (areaSideLength * 2), (int) areaSideLength)).occupation, 1, "Bot[0,2] Dead, Area1[1,2] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2((int) (areaSideLength * (2f + 1f/3f) + 1), (int) areaSideLength)).occupation, 1, "Bot[0,2] Dead, Area2[1,2] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2((int) (areaSideLength * (2f + 2f/3f) + 1), (int) areaSideLength)).occupation, 1, "Bot[0,2] Dead, Area3[1,2] Occupation");
 
-                EqualTest(Board.Instance.cellAreaMap.get(new int2(0, (int) (areaSideLength * 2))).occupation, -1, "Bot[0,2] Dead, Area1[0,2] Occupation");
-                EqualTest(Board.Instance.cellAreaMap.get(new int2((int) (areaSideLength * 2f / 3f) + 1, (int) (areaSideLength * (2f+2f/3f)) + 1)).occupation, -1, "Bot[0,2] Dead, Area2[0,2] Occupation");
-                EqualTest(Board.Instance.cellAreaMap.get(new int2(0, (int) (areaSideLength * 2.5f) + 1)).occupation, -1, "Bot[0,2] Dead, Area3[0,2] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2(0, (int) (areaSideLength * 2))).occupation, -1, "Bot[0,2] Dead, Area1[0,2] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2((int) (areaSideLength * 2f / 3f) + 1, (int) (areaSideLength * (2f+2f/3f)) + 1)).occupation, -1, "Bot[0,2] Dead, Area2[0,2] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2(0, (int) (areaSideLength * 2.5f) + 1)).occupation, -1, "Bot[0,2] Dead, Area3[0,2] Occupation");
 
-                EqualTest(Board.Instance.cellAreaMap.get(new int2((int) areaSideLength, (int) (areaSideLength * 2))).occupation, 1, "Bot[0,2] Dead, Area1[1,2] Occupation");
-                EqualTest(Board.Instance.cellAreaMap.get(new int2((int) (areaSideLength + (int) (areaSideLength / 3f)), (int) (areaSideLength * (2f+2f/3f)) + 1)).occupation, -1, "Bot[0,2] Dead, Area2[1,2] Occupation");
-                EqualTest(Board.Instance.cellAreaMap.get(new int2((int) areaSideLength, (int) (areaSideLength * 2.5f) + 1)).occupation, 0, "Bot[0,2] Dead, Area3[1,2] Occupation");
-                EqualTest(Board.Instance.cellAreaMap.get(new int2((int) (areaSideLength * (1f + 2f/3f) + 1), (int) (areaSideLength * 2))).occupation, 1, "Bot[0,2] Dead, Area3[1,2] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2((int) areaSideLength, (int) (areaSideLength * 2))).occupation, 1, "Bot[0,2] Dead, Area1[1,2] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2((int) (areaSideLength + (int) (areaSideLength / 3f)), (int) (areaSideLength * (2f+2f/3f)) + 1)).occupation, -1, "Bot[0,2] Dead, Area2[1,2] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2((int) areaSideLength, (int) (areaSideLength * 2.5f) + 1)).occupation, 0, "Bot[0,2] Dead, Area3[1,2] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2((int) (areaSideLength * (1f + 2f/3f) + 1), (int) (areaSideLength * 2))).occupation, 1, "Bot[0,2] Dead, Area3[1,2] Occupation");
 
-                EqualTest(Board.Instance.cellAreaMap.get(new int2((int) (areaSideLength * 2), (int) (areaSideLength * 2))).occupation, 0, "Bot[0,2] Dead, Area1[2,2] Occupation");
-                EqualTest(Board.Instance.cellAreaMap.get(new int2((int) (areaSideLength * (2f + 2f/3f)) + 1, (int) (areaSideLength * 2))).occupation, -1, "Bot[0,2] Dead, Area2[2,2] Occupation");
-                EqualTest(Board.Instance.cellAreaMap.get(new int2((int) (areaSideLength * 2), (int) (areaSideLength * 2.5f) + 1)).occupation, 0, "Bot[0,2] Dead, Area3[2,2] Occupation");
-                EqualTest(Board.Instance.cellAreaMap.get(new int2((int) (areaSideLength * (2f + 1f/3f) + 1), (int) (areaSideLength * 2))).occupation, 0, "Bot[0,2] Dead, Area4[2,2] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2((int) (areaSideLength * 2), (int) (areaSideLength * 2))).occupation, 0, "Bot[0,2] Dead, Area1[2,2] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2((int) (areaSideLength * (2f + 2f/3f)) + 1, (int) (areaSideLength * 2))).occupation, -1, "Bot[0,2] Dead, Area2[2,2] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2((int) (areaSideLength * 2), (int) (areaSideLength * 2.5f) + 1)).occupation, 0, "Bot[0,2] Dead, Area3[2,2] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2((int) (areaSideLength * (2f + 1f/3f) + 1), (int) (areaSideLength * 2))).occupation, 0, "Bot[0,2] Dead, Area4[2,2] Occupation");
             }
 
             if(botsAlive[8] && (updateP2B2.y * Board.SCALE <= 0)){
@@ -935,42 +942,42 @@ public class Tester {
 
                 EqualTest(Board.Instance.GetAreaCount(), 28, "Bot[1,1] AreaCountCheck");
 
-                EqualTest(Board.Instance.cellAreaMap.get(new int2(0, 0)).occupation, -1, "Bot[2,2] Dead, Area1[0,0] Occupation");
-                EqualTest(Board.Instance.cellAreaMap.get(new int2(0, (int) (areaSideLength * 0.5f + 1))).occupation, -1, "Bot[2,2] Dead, Area2[0,0] Occupation");
-                EqualTest(Board.Instance.cellAreaMap.get(new int2((int) (areaSideLength/3f), 0)).occupation, -1, "Bot[2,2] Dead, Area3[0,0] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2(0, 0)).occupation, -1, "Bot[2,2] Dead, Area1[0,0] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2(0, (int) (areaSideLength * 0.5f + 1))).occupation, -1, "Bot[2,2] Dead, Area2[0,0] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2((int) (areaSideLength/3f), 0)).occupation, -1, "Bot[2,2] Dead, Area3[0,0] Occupation");
 
-                EqualTest(Board.Instance.cellAreaMap.get(new int2((int) areaSideLength, 0)).occupation, 0, "Bot[2,2] Dead, Area1[1,0] Occupation");
-                EqualTest(Board.Instance.cellAreaMap.get(new int2((int) areaSideLength, (int) (areaSideLength * 0.5f) + 1)).occupation, 0, "Bot[2,2] Dead, Area2[1,0] Occupation");
-                EqualTest(Board.Instance.cellAreaMap.get(new int2((int) (areaSideLength * (1f + 2f/3f)) + 1, 0)).occupation, -1, "Bot[2,2] Dead, Area3[1,0] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2((int) areaSideLength, 0)).occupation, 0, "Bot[2,2] Dead, Area1[1,0] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2((int) areaSideLength, (int) (areaSideLength * 0.5f) + 1)).occupation, 0, "Bot[2,2] Dead, Area2[1,0] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2((int) (areaSideLength * (1f + 2f/3f)) + 1, 0)).occupation, -1, "Bot[2,2] Dead, Area3[1,0] Occupation");
 
-                EqualTest(Board.Instance.cellAreaMap.get(new int2((int) (areaSideLength * 2), 0)).occupation, -1, "Bot[2,2] Dead, Area1[2,0] Occupation");
-                EqualTest(Board.Instance.cellAreaMap.get(new int2((int) (areaSideLength * (2f + 1f/3f)) + 1,  0)).occupation, 2, "Bot[2,2] Dead, Area2[2,0] Occupation");
-                EqualTest(Board.Instance.cellAreaMap.get(new int2((int) (areaSideLength * (2f + 2f/3f)) + 1,  0)).occupation, 2, "Bot[2,2] Dead, Area3[2,0] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2((int) (areaSideLength * 2), 0)).occupation, -1, "Bot[2,2] Dead, Area1[2,0] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2((int) (areaSideLength * (2f + 1f/3f)) + 1,  0)).occupation, 2, "Bot[2,2] Dead, Area2[2,0] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2((int) (areaSideLength * (2f + 2f/3f)) + 1,  0)).occupation, 2, "Bot[2,2] Dead, Area3[2,0] Occupation");
 
-                EqualTest(Board.Instance.cellAreaMap.get(new int2(0, (int) areaSideLength)).occupation, -1, "Bot[2,2] Dead, Area[0,1] Occupation");
-                EqualTest(Board.Instance.cellAreaMap.get(new int2(0, (int) (areaSideLength * 1.5f) + 1)).occupation, -1, "Bot[2,2] Dead, Area[0,1] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2(0, (int) areaSideLength)).occupation, -1, "Bot[2,2] Dead, Area[0,1] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2(0, (int) (areaSideLength * 1.5f) + 1)).occupation, -1, "Bot[2,2] Dead, Area[0,1] Occupation");
 
-                EqualTest(Board.Instance.cellAreaMap.get(new int2((int) areaSideLength, (int) areaSideLength)).occupation, 0, "Bot[2,2] Dead, Area1[1,1] Occupation");
-                EqualTest(Board.Instance.cellAreaMap.get(new int2((int) areaSideLength, (int) (areaSideLength * 1.5f) + 1)).occupation, 0, "Bot[2,2] Dead, Area2[1,1] Occupation");
-                EqualTest(Board.Instance.cellAreaMap.get(new int2((int) (areaSideLength * (1f + 2f/3f)) + 1, (int) areaSideLength)).occupation, 0, "Bot[2,2] Dead, Area3[1,1] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2((int) areaSideLength, (int) areaSideLength)).occupation, 0, "Bot[2,2] Dead, Area1[1,1] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2((int) areaSideLength, (int) (areaSideLength * 1.5f) + 1)).occupation, 0, "Bot[2,2] Dead, Area2[1,1] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2((int) (areaSideLength * (1f + 2f/3f)) + 1, (int) areaSideLength)).occupation, 0, "Bot[2,2] Dead, Area3[1,1] Occupation");
 
-                EqualTest(Board.Instance.cellAreaMap.get(new int2((int) (areaSideLength * 2), (int) areaSideLength)).occupation, 1, "Bot[2,2] Dead, Area1[1,2] Occupation");
-                EqualTest(Board.Instance.cellAreaMap.get(new int2((int) (areaSideLength * (2f + 1f/3f) + 1), (int) areaSideLength)).occupation, 1, "Bot[2,2] Dead, Area2[1,2] Occupation");
-                EqualTest(Board.Instance.cellAreaMap.get(new int2((int) (areaSideLength * (2f + 2f/3f) + 1), (int) areaSideLength)).occupation, 1, "Bot[2,2] Dead, Area3[1,2] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2((int) (areaSideLength * 2), (int) areaSideLength)).occupation, 1, "Bot[2,2] Dead, Area1[1,2] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2((int) (areaSideLength * (2f + 1f/3f) + 1), (int) areaSideLength)).occupation, 1, "Bot[2,2] Dead, Area2[1,2] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2((int) (areaSideLength * (2f + 2f/3f) + 1), (int) areaSideLength)).occupation, 1, "Bot[2,2] Dead, Area3[1,2] Occupation");
 
-                EqualTest(Board.Instance.cellAreaMap.get(new int2(0, (int) (areaSideLength * 2))).occupation, -1, "Bot[2,2] Dead, Area1[0,2] Occupation");
-                EqualTest(Board.Instance.cellAreaMap.get(new int2((int) (areaSideLength * 2f / 3f) + 1, (int) (areaSideLength * (2f+2f/3f)) + 1)).occupation, -1, "Bot[2,2] Dead, Area2[0,2] Occupation");
-                EqualTest(Board.Instance.cellAreaMap.get(new int2(0, (int) (areaSideLength * 2.5f) + 1)).occupation, -1, "Bot[2,2] Dead, Area3[0,2] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2(0, (int) (areaSideLength * 2))).occupation, -1, "Bot[2,2] Dead, Area1[0,2] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2((int) (areaSideLength * 2f / 3f) + 1, (int) (areaSideLength * (2f+2f/3f)) + 1)).occupation, -1, "Bot[2,2] Dead, Area2[0,2] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2(0, (int) (areaSideLength * 2.5f) + 1)).occupation, -1, "Bot[2,2] Dead, Area3[0,2] Occupation");
 
-                EqualTest(Board.Instance.cellAreaMap.get(new int2((int) areaSideLength, (int) (areaSideLength * 2))).occupation, 1, "Bot[2,2] Dead, Area1[1,2] Occupation");
-                EqualTest(Board.Instance.cellAreaMap.get(new int2((int) (areaSideLength + (int) (areaSideLength / 3f)), (int) (areaSideLength * (2f+2f/3f)) + 1)).occupation, -1, "Bot[2,2] Dead, Area2[1,2] Occupation");
-                EqualTest(Board.Instance.cellAreaMap.get(new int2((int) areaSideLength, (int) (areaSideLength * 2.5f) + 1)).occupation, 0, "Bot[2,2] Dead, Area3[1,2] Occupation");
-                EqualTest(Board.Instance.cellAreaMap.get(new int2((int) (areaSideLength * (1f + 2f/3f) + 1), (int) (areaSideLength * 2))).occupation, 1, "Bot[2,2] Dead, Area3[1,2] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2((int) areaSideLength, (int) (areaSideLength * 2))).occupation, 1, "Bot[2,2] Dead, Area1[1,2] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2((int) (areaSideLength + (int) (areaSideLength / 3f)), (int) (areaSideLength * (2f+2f/3f)) + 1)).occupation, -1, "Bot[2,2] Dead, Area2[1,2] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2((int) areaSideLength, (int) (areaSideLength * 2.5f) + 1)).occupation, 0, "Bot[2,2] Dead, Area3[1,2] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2((int) (areaSideLength * (1f + 2f/3f) + 1), (int) (areaSideLength * 2))).occupation, 1, "Bot[2,2] Dead, Area3[1,2] Occupation");
 
-                EqualTest(Board.Instance.cellAreaMap.get(new int2((int) (areaSideLength * 2), (int) (areaSideLength * 2))).occupation, 0, "Bot[2,2] Dead, Area1[2,2] Occupation");
-                EqualTest(Board.Instance.cellAreaMap.get(new int2((int) (areaSideLength * (2f + 2f/3f)) + 1, (int) (areaSideLength * 2))).occupation, -1, "Bot[2,2] Dead, Area2[2,2] Occupation");
-                EqualTest(Board.Instance.cellAreaMap.get(new int2((int) (areaSideLength * 2), (int) (areaSideLength * 2.5f) + 1)).occupation, 0, "Bot[2,2] Dead, Area3[2,2] Occupation");
-                EqualTest(Board.Instance.cellAreaMap.get(new int2((int) (areaSideLength * (2f + 1f/3f) + 1), (int) (areaSideLength * 2))).occupation, 0, "Bot[2,2] Dead, Area4[2,2] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2((int) (areaSideLength * 2), (int) (areaSideLength * 2))).occupation, 0, "Bot[2,2] Dead, Area1[2,2] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2((int) (areaSideLength * (2f + 2f/3f)) + 1, (int) (areaSideLength * 2))).occupation, -1, "Bot[2,2] Dead, Area2[2,2] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2((int) (areaSideLength * 2), (int) (areaSideLength * 2.5f) + 1)).occupation, 0, "Bot[2,2] Dead, Area3[2,2] Occupation");
+                EqualTest(Board.Instance.cellAreaMap.get(new Integer2((int) (areaSideLength * (2f + 1f/3f) + 1), (int) (areaSideLength * 2))).occupation, 0, "Bot[2,2] Dead, Area4[2,2] Occupation");
             }
 
             if(botsAlive[0])
@@ -1006,18 +1013,85 @@ public class Tester {
         }
     }
 
+    public static void TestPathConverter(){
+
+        var testPath = new ArrayList<Integer2>();
+        var i = 0;
+        testPath.add(i++, new Integer2(50, 50));
+        testPath.add(i++, new Integer2(51, 50));
+        testPath.add(i++, new Integer2(51, 51));
+
+        EqualTest(PathSystem.ConvertPath(testPath).peek().value, 51, "H -> D");
+
+        i = 0;
+        testPath.clear();
+        testPath.add(i++, new Integer2(50, 50));
+        testPath.add(i++, new Integer2(51, 50));
+        testPath.add(i++, new Integer2(51, 49));
+
+        EqualTest(PathSystem.ConvertPath(testPath).peek().value, -51, "H -> U");
+
+        i = 0;
+        testPath.clear();
+        testPath.add(i++, new Integer2(50, 50));
+        testPath.add(i++, new Integer2(49, 50));
+        testPath.add(i++, new Integer2(49, 51));
+
+        EqualTest(PathSystem.ConvertPath(testPath).peek().value, -49, "!H -> D");
+
+        i = 0;
+        testPath.clear();
+        testPath.add(i++, new Integer2(50, 50));
+        testPath.add(i++, new Integer2(49, 50));
+        testPath.add(i++, new Integer2(49, 49));
+
+        EqualTest(PathSystem.ConvertPath(testPath).peek().value, 49, "!H -> U");
+
+        i = 0;
+        testPath.add(i++, new Integer2(50, 50));
+        testPath.add(i++, new Integer2(50, 49));
+        testPath.add(i++, new Integer2(49, 49));
+
+        EqualTest(PathSystem.ConvertPath(testPath).peek().value, -49, "V -> L");
+
+        i = 0;
+        testPath.clear();
+        testPath.add(i++, new Integer2(50, 50));
+        testPath.add(i++, new Integer2(50, 49));
+        testPath.add(i++, new Integer2(51, 49));
+
+        EqualTest(PathSystem.ConvertPath(testPath).peek().value, 49, "V -> R");
+
+        i = 0;
+        testPath.clear();
+        testPath.add(i++, new Integer2(50, 50));
+        testPath.add(i++, new Integer2(50, 51));
+        testPath.add(i++, new Integer2(49, 51));
+
+        EqualTest(PathSystem.ConvertPath(testPath).peek().value, 51, "!V -> L");
+
+        i = 0;
+        testPath.clear();
+        testPath.add(i++, new Integer2(50, 50));
+        testPath.add(i++, new Integer2(50, 51));
+        testPath.add(i++, new Integer2(51, 51));
+
+        EqualTest(PathSystem.ConvertPath(testPath).peek().value, -51, "!V -> R");
+
+    }
+
     private static String FormatBool(boolean value, String postfix){
         return (value? ConsoleColors.GREEN_BOLD + "TRUE" : ConsoleColors.RED_BOLD + "FALSE") + ConsoleColors.RESET + postfix;
     }
 
-    private static <T> void EqualTest(T value, T expectedValue, String testName){
+    public static <T> void EqualTest(T value, T expectedValue, String testName){
         var bool = value.equals(expectedValue);
         var result = FormatBool(bool, ": " + testName + " [" + value + "/" + expectedValue + "]");
         if(!bool)
             Debug.Log(result);
     }
 
-    private static <T> void SmallerEqualTest(Comparable<T> value, T max, String testName) {
+    public static <T> void SmallerEqualTest(Comparable<T> value, T max, String testName) {
         var bool = value.compareTo(max) <= 0;
         var result = FormatBool(bool, ": " + testName + " [" + value + "/" + max + "]");
         if(!bool)
@@ -1031,5 +1105,38 @@ public class Tester {
             }
         }
         return false;
+    }
+
+    public static void PrintPath(ArrayList<Integer2> path, Data.Board board){
+        var image = new BufferedImage(Data.Board.BOARD_SIDE_LENGTH, Data.Board.BOARD_SIDE_LENGTH, BufferedImage.TYPE_INT_RGB);
+
+        for (var y = 0; y < Data.Board.BOARD_SIDE_LENGTH; y++) {
+            for (var x = 0; x < Data.Board.BOARD_SIDE_LENGTH; x++) {
+                int colorWhite = 0xFFFFFF;
+                image.setRGB(x, y, colorWhite);
+            }
+        }
+
+        for(var cell : path)
+            image.setRGB(cell.x, cell.y, 0x999999);
+
+        for(var cell : board.staticWalls.cells)
+            image.setRGB(cell.x, cell.y, 0);
+
+        for(var cell : (HashSet<Integer2>)board.playerWalls[0].cells.clone())
+            image.setRGB(cell.x, cell.y, 0xFF0000);
+        for(var cell : (HashSet<Integer2>)board.playerWalls[1].cells.clone())
+            image.setRGB(cell.x, cell.y, 0x00FF00);
+        for(var cell : (HashSet<Integer2>)board.playerWalls[2].cells.clone())
+            image.setRGB(cell.x, cell.y, 0x0000FF);
+
+
+        var outputFile = new File("output.png");
+        try {
+            ImageIO.write(image, "png", outputFile);
+            System.out.println("Bild erfolgreich erstellt: " + outputFile.getAbsolutePath());
+        } catch (IOException e) {
+            System.out.println("Fehler beim Speichern des Bildes: " + e.getMessage());
+        }
     }
 }

@@ -1,6 +1,6 @@
-package Core;
+package Discarded;
 
-import Utils.int2;
+import Data.Integer2;
 import lenz.htw.duktus.net.NetworkClient;
 import lenz.htw.duktus.net.Update;
 
@@ -14,7 +14,7 @@ public class Player {
         Board.Instance.areas.add(walls);
 
         for(var i = 0; i != bots.length; i++){
-            var pos = new int2(client.getStartX(playerNumber, i), client.getStartY(playerNumber, i));
+            var pos = new Integer2(client.getStartX(playerNumber, i), client.getStartY(playerNumber, i));
             bots[i] = new Bot(pos, playerNumber);
             walls.cells.add(pos);
             Board.Instance.RemapCellToArea(pos, walls);
@@ -28,7 +28,7 @@ public class Player {
     }
 
     public void UpdateBot(Update update){
-        var pos = new int2(update.x, update.y);
+        var pos = new Integer2(update.x, update.y);
         if(pos == bots[update.bot].pos)
             return;
 

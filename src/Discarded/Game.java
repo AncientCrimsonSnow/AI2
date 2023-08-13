@@ -1,6 +1,6 @@
-package Core;
+package Discarded;
 
-import Utils.int2;
+import Data.Integer2;
 import lenz.htw.duktus.net.NetworkClient;
 import lenz.htw.duktus.net.Update;
 
@@ -14,21 +14,21 @@ public class Game {
     public Player[] player = new Player[3];
 
 
-    private List<int2> _playerBotOrder = new ArrayList<>(){{
-        add(new int2(0,0));
-        add(new int2(0,1));
-        add(new int2(0,2));
-        add(new int2(1,0));
-        add(new int2(1,1));
-        add(new int2(1,2));
-        add(new int2(2,0));
-        add(new int2(2,1));
-        add(new int2(2,2));
+    private List<Integer2> _playerBotOrder = new ArrayList<>(){{
+        add(new Integer2(0,0));
+        add(new Integer2(0,1));
+        add(new Integer2(0,2));
+        add(new Integer2(1,0));
+        add(new Integer2(1,1));
+        add(new Integer2(1,2));
+        add(new Integer2(2,0));
+        add(new Integer2(2,1));
+        add(new Integer2(2,2));
     }};
 
     private int _updateIndex = 0;
 
-    private int2 _lastUpdatedBot = new int2(2,2);
+    private Integer2 _lastUpdatedBot = new Integer2(2,2);
 
     public Game(NetworkClient client) {
         Instance = this;
@@ -48,7 +48,7 @@ public class Game {
 
     public void Update(Update update){
         var expectedUpdate = _playerBotOrder.get(_updateIndex);
-        var receivedUpdate = new int2(update.player, update.bot);
+        var receivedUpdate = new Integer2(update.player, update.bot);
 
         while(!expectedUpdate.equals(receivedUpdate)){
             _playerBotOrder.remove(_updateIndex);

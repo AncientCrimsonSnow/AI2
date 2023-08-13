@@ -1,12 +1,12 @@
-package Core;
+package Discarded;
 
-import Utils.int2;
+import Data.Integer2;
 
 import java.util.HashSet;
 
 public class Area {
     public int occupation = -1;
-    public HashSet<int2> cells = new HashSet();
+    public HashSet<Integer2> cells = new HashSet();
 
     @Override
     public String toString(){

@@ -1,7 +1,7 @@
 package Systems;
 
 import Data.Area;
-import Utils.int2;
+import Data.Integer2;
 
 import java.util.HashSet;
 
@@ -13,7 +13,7 @@ public class AreaSystem {
         return area;
     }
 
-    public static Data.Area InitArea(int occupation, HashSet<int2> cells){
+    public static Data.Area InitArea(int occupation, HashSet<Integer2> cells){
         var area = new Area();
         area.occupation = occupation;
         area.cells = cells;
