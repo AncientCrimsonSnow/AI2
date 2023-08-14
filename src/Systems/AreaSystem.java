@@ -19,6 +19,4 @@ public class AreaSystem {
         area.cells = cells;
         return area;
     }
-
-
 }

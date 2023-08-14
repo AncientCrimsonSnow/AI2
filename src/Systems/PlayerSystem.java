@@ -2,23 +2,25 @@ package Systems;
 
 import Data.Board;
 import Data.Bot;
+import Data.Integer2;
 import Data.Player;
 import Testing.MyClient;
-import Data.Integer2;
 import lenz.htw.duktus.net.NetworkClient;
 import lenz.htw.duktus.net.Update;
-
-import java.util.HashSet;
 
 public class PlayerSystem {
     public static Data.Player InitPlayer(int playerNumber, NetworkClient client){
         var player = new Player();
         player.bots = new Bot[Bot.BOT_COUNT];
 
-        var botStartingPositions = new HashSet<Integer2>(Bot.BOT_COUNT);
         for(var b = 0; b != Bot.BOT_COUNT; b++){
             var pos = new Integer2(Math.round(client.getStartX(playerNumber, b) * Board.SCALE), Math.round(client.getStartY(playerNumber, b) * Board.SCALE));
-            botStartingPositions.add(pos);
+
+            if(pos.x == Board.BOARD_SIDE_LENGTH)
+                pos.x--;
+            if(pos.y == Board.BOARD_SIDE_LENGTH)
+                pos.y--;
+
             player.bots[b] = BotSystem.InitBot(pos);
         }
 
@@ -29,7 +31,6 @@ public class PlayerSystem {
         var player = new Player();
         player.bots = new Bot[Bot.BOT_COUNT];
 
-        var botStartingPositions = new HashSet<Integer2>(Bot.BOT_COUNT);
         for(var b = 0; b != Bot.BOT_COUNT; b++){
             var pos = new Integer2(Math.round(client.getStartX(playerNumber, b) * Board.SCALE), Math.round(client.getStartY(playerNumber, b) * Board.SCALE));
 
@@ -38,7 +39,6 @@ public class PlayerSystem {
             if(pos.y == Board.BOARD_SIDE_LENGTH)
                 pos.y--;
 
-            botStartingPositions.add(pos);
             player.bots[b] = BotSystem.InitBot(pos);
         }
 

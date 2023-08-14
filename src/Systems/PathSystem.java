@@ -159,7 +159,6 @@ public class PathSystem {
     }
 
     public static Queue<PathCell> ConvertPath(ArrayList<Integer2> path){
-        //TODO WRONG
         Queue<PathCell> result = new LinkedList<>();
 
         for(var i = 2; i != path.size(); i++){

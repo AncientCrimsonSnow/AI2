@@ -27,9 +27,7 @@ public class ClientStarter {
         Debug.Log(networkClient.getMyPlayerNumber());
 
         Queue<PathCell>[] movesBot = new Queue[Bot.BOT_COUNT];
-
         var turnPoints = new PathCell[Bot.BOT_COUNT];
-
         var playerNumber = networkClient.getMyPlayerNumber();
 
         var updateThread = new Thread(() -> {

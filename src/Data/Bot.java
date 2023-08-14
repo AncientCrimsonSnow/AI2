@@ -5,5 +5,4 @@ public class Bot {
     public Integer2 pos;
     public boolean alive;
     public Direction direction;
-
 }
