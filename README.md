@@ -1,5 +1,5 @@
 # GT1_AI-To-solve-RTS-Game
-This repository contains the practical part of the Game Technologies 1 (GT1) course
+This repository contains the practical part of the Game Technologies 1 (GT1) course M.Sc..
 
 ## Project Overview
 This repository implements an AI for a real-time strategy game developed in Java. The AI applies data-oriented design principles for efficient gameplay management.
